@@ -1,0 +1,287 @@
+.credit-cards-page {
+  padding: 0 0 100px;
+  background-color: #f4f5f9; /* Subtle grey background like screenshot */
+  min-height: 100vh;
+}
+
+/* Header - Left aligned with back arrow */
+.cc-header-standard {
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 16px 20px;
+  z-index: 100;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.header-left-cc {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-arrow-cc {
+  background: none;
+  border: none;
+  color: #1e293b;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.header-titles h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1b1b4d;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.header-titles span {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* List Container */
+.cc-content-list {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Individual Credit Card Item */
+.credit-card-item {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9;
+}
+
+/* Blue Ribbon Badge - Top Right */
+.cc-earn-ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #2563eb;
+  color: white;
+  padding: 8px 16px;
+  border-bottom-left-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Card Header */
+.cc-card-header-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-top: 12px;
+}
+
+.cc-card-logo-container {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: 1px solid #f1f5f9;
+}
+
+.cc-bank-logo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.cc-product-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1b1b4d;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.cc-product-tag {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+/* Features List */
+.cc-card-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.cc-feature-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cc-feature-emoji {
+  font-size: 16px;
+}
+
+.cc-feature-description {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Fees Grid */
+.cc-fees-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.cc-fee-card {
+  background: #f1f5f9; /* Light grey box */
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cc-fee-card.teal-tint {
+  background: #f0fdfa; /* Light teal box */
+}
+
+.cc-fee-title {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.cc-fee-amount {
+  font-size: 15px;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+.cc-fee-amount.teal-text {
+  color: #14b8a6;
+}
+
+/* Action Buttons */
+.cc-button-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn-details-purple {
+  background: white;
+  border: 1.5px solid #7c3aed;
+  color: #7c3aed;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-details-purple:active {
+  background: #f5f3ff;
+  transform: scale(0.98);
+}
+
+.btn-share-teal {
+  background: #10b981;
+  color: white;
+  border: none;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-share-teal:active {
+  transform: scale(0.98);
+  filter: brightness(0.95);
+}
+
+/* Browse Other Categories */
+.browse-categories-section {
+  margin-top: 24px;
+  padding: 16px 0;
+  border-top: 1px solid #edf2f7;
+}
+
+.section-title-cc {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1b1b4d;
+  margin-bottom: 24px;
+}
+
+.categories-grid-cc {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px 10px;
+}
+
+.category-item-cc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.category-icon-box-cc {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%; /* Circle icons as per screenshot */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.category-name-cc {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1b1b4d;
+  line-height: 1.2;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}

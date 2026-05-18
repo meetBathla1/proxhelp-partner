@@ -1,0 +1,285 @@
+.apply-container {
+  min-height: 100vh;
+  background: #ffffff;
+  padding-bottom: 40px;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ── Header ── */
+.apply-header {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.header-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.apply-brand-logo {
+  height: 120px;
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: darken;
+  margin: -32px 0; /* Increase negative margin to prevent the header from becoming massively tall due to the logo's internal whitespace */
+}
+
+.apply-partner-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  border-left: 2px solid #e2e8f0;
+  padding-left: 12px;
+}
+
+/* ── Banner ── */
+.apply-banner-wrapper {
+  width: 100%;
+  background: #f8fafc;
+  display: flex;
+  justify-content: center;
+}
+
+.apply-product-banner {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.apply-banner-placeholder {
+  width: 100%;
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--secondary), #1e293b);
+  color: white;
+}
+
+.apply-banner-placeholder h3 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+/* ── Tabs (Segmented Control) ── */
+.apply-tabs-container {
+  padding: 16px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.apply-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.apply-tab-btn {
+  flex: 1;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.apply-tab-btn.active {
+  background: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ── Content Area ── */
+.apply-content {
+  padding: 24px 20px;
+}
+
+.apply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.apply-input {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.apply-input:focus {
+  border-color: var(--secondary);
+}
+
+.terms-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.terms-group input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--secondary);
+  cursor: pointer;
+}
+
+.terms-group label {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.terms-group a {
+  color: blue;
+  text-decoration: underline;
+}
+
+.btn-apply-submit {
+  width: 100%;
+  padding: 16px;
+  background: #1e293b; /* Dark Navy for submit */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: background 0.2s ease;
+}
+
+.btn-apply-submit:hover:not(:disabled) {
+  background: var(--secondary);
+}
+
+.btn-apply-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ── OTP Form ── */
+.otp-form {
+  text-align: center;
+}
+
+.otp-instructions {
+  margin-bottom: 24px;
+}
+
+.otp-instructions h4 {
+  font-size: 18px;
+  margin: 12px 0 8px;
+  color: var(--text-main);
+}
+
+.otp-instructions p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.otp-input {
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 8px;
+  font-weight: 600;
+}
+
+.btn-resend-otp {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 16px;
+  cursor: pointer;
+}
+
+/* ── Details Section ── */
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 16px;
+  margin-top: 24px;
+}
+
+.section-title:first-child {
+  margin-top: 0;
+}
+
+.features-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.features-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.feat-icon {
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.feat-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.fees-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fees-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fees-list span {
+  font-size: 14px;
+  color: #334155;
+}
+
+.apply-error-msg {
+  background: #fef2f2;
+  color: #ef4444;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.apply-loading, .apply-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 16px;
+  color: #64748b;
+}

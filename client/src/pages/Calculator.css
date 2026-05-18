@@ -1,0 +1,655 @@
+.calculator-container {
+  padding: 24px 16px 20px;
+  background-color: #ffffff;
+  min-height: 100vh;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ── Header ── */
+.calc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  padding-top: 10px;
+}
+
+.calc-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1B1B4D;
+  letter-spacing: -0.02em;
+}
+
+.calc-title span {
+  color: #FF5C28;
+}
+
+.bell-btn {
+  width: 44px;
+  height: 44px;
+  background: #f8fafc;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F59A2D;
+  border: none;
+}
+
+/* ── Sections ── */
+.calc-section {
+  margin-bottom: 32px;
+}
+
+.section-label {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1B1B4D;
+  margin-bottom: 20px;
+}
+
+/* ── Unified Grid (Investment) ── */
+.calc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ── Standard Card (Grid) ── */
+.calc-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(27, 27, 77, 0.05);
+  border: 1px solid #f8fafc;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-height: 150px;
+  justify-content: center;
+}
+
+.calc-card:active {
+  transform: translateY(2px);
+}
+
+/* Accent Bars (Investment) */
+.calc-card.accent-orange::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #FF5C28;
+}
+
+.calc-card.accent-navy::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #1B1B4D;
+}
+
+/* ── Icon Circle ── */
+.card-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+/* ── Card Typography (Grid) ── */
+.card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1B1B4D;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.card-subtitle {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Wide Card Style (For More Calculators & Loans) ── */
+.calc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.calc-card-wide {
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 20px;
+  gap: 16px;
+  min-height: 80px;
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.calc-card-wide .card-icon-circle {
+  margin-bottom: 0;
+}
+
+.card-title-wide {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1B1B4D;
+  margin-bottom: 2px;
+}
+
+.card-subtitle-wide {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* ── Carousel (Tax & Savings) ── */
+.calc-carousel-wrapper {
+  margin-bottom: 12px;
+}
+
+.calc-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding: 4px 4px 20px;
+  scrollbar-width: none;
+}
+
+.calc-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-card {
+  flex: 0 0 145px;
+  min-height: 160px;
+}
+
+/* ── Pagination Dots ── */
+.pagination-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e2e8f0;
+}
+
+.dot.active {
+  width: 16px;
+  border-radius: 10px;
+  background: #2563eb;
+}
+
+/* ── Calculator Detail Views ── */
+
+.calc-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  color: #1B1B4D;
+  font-weight: 700;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.feLumpLux {
+  --lx-blue: #1a4b8c;
+  --lx-orange: #ff7a1a;
+  --lx-muted: #64748b;
+  --lx-input-bg: #eef2f7;
+  --lx-shadow: 0 10px 36px rgba(20, 45, 100, 0.07), 0 2px 8px rgba(20, 45, 100, 0.04);
+  --lx-font: 'Outfit', sans-serif;
+  --lx-font-display: 'Outfit', sans-serif;
+  font-family: var(--lx-font);
+  -webkit-font-smoothing: antialiased;
+  padding: 4px 2px 32px;
+  display: grid;
+  gap: 18px;
+  max-width: 520px;
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+.feLumpLux__pageHead {
+  text-align: center;
+  padding: 6px 8px 4px;
+}
+
+.feLumpLux__kicker {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.feLumpLux__title {
+  margin: 0;
+  font-family: var(--lx-font-display);
+  font-size: clamp(21px, 5vw, 25px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--lx-blue);
+  line-height: 1.22;
+}
+
+.feLumpLux__mainCard {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: var(--lx-shadow);
+  border: 1px solid rgba(26, 75, 140, 0.06);
+  padding: 22px 18px 20px;
+  display: grid;
+  gap: 20px;
+}
+
+.feLumpLux__topGrid {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 400px) {
+  .feLumpLux__topGrid {
+    grid-template-columns: 1fr minmax(148px, 168px);
+    align-items: stretch;
+    gap: 18px;
+  }
+}
+
+.feLumpLux__inputsCol {
+  display: grid;
+  gap: 14px;
+}
+
+.feLumpLux__field {
+  display: grid;
+  gap: 7px;
+}
+
+.feLumpLux__fieldLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lx-muted);
+}
+
+.feLumpLux__inputWrap {
+  position: relative;
+}
+
+.feLumpLux__inputWrap--prefix .feLumpLux__input {
+  padding-left: 34px;
+}
+
+.feLumpLux__inputWrap .feLumpLux__input {
+  padding-right: 48px;
+}
+
+.feLumpLux__prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--lx-blue);
+  pointer-events: none;
+}
+
+.feLumpLux__suffix {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lx-muted);
+  pointer-events: none;
+}
+
+.feLumpLux__suffix--text {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.feLumpLux__input {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 14px;
+  background: var(--lx-input-bg);
+  padding: 0 16px;
+  font-family: var(--lx-font);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--lx-blue);
+  box-sizing: border-box;
+  transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.feLumpLux__input[type='number']::-webkit-outer-spin-button,
+.feLumpLux__input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.feLumpLux__input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.feLumpLux__input:focus {
+  outline: none;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(26, 75, 140, 0.12);
+}
+
+.feLumpLux__compoundCol {
+  background: linear-gradient(165deg, #f8fafc 0%, #eef4fc 100%);
+  border-radius: 16px;
+  padding: 16px 14px 14px;
+  border: 1px solid rgba(26, 75, 140, 0.09);
+  display: grid;
+  gap: 12px;
+  align-content: center;
+  min-height: 100%;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.feLumpLux__switch {
+  width: 52px;
+  height: 30px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  background: #c7d6f0;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.feLumpLux__switch.is-on {
+  background: var(--lx-blue);
+}
+
+.feLumpLux__switchKnob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.feLumpLux__switch.is-on .feLumpLux__switchKnob {
+  transform: translateX(22px);
+}
+
+.feLumpLux__compoundHint {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.feLumpLux__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 2px;
+}
+
+.feLumpLux__btnReset {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+  height: 48px;
+  padding: 0 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(26, 75, 140, 0.2);
+  background: #fff;
+  color: var(--lx-blue);
+  font-family: var(--lx-font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.feLumpLux__btnCalc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 148px;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(180deg, #ff8f2e 0%, var(--lx-orange) 100%);
+  color: #fff;
+  font-family: var(--lx-font);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(255, 122, 26, 0.4);
+}
+
+.feLumpLux__quickRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.feLumpLux__quickCard {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px 20px;
+  border: 1px solid rgba(26, 75, 140, 0.06);
+  box-shadow: var(--lx-shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+
+.feLumpLux__quickCard--accent {
+  border-color: rgba(255, 122, 26, 0.22);
+  background: linear-gradient(180deg, #fff 0%, #fffaf6 100%);
+}
+
+.feLumpLux__quickLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7d8da1;
+}
+
+.feLumpLux__quickVal {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--lx-blue);
+}
+
+.feLumpLux__quickVal--accent {
+  color: var(--lx-orange);
+}
+
+.feLumpLux__chartCard {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px 14px 18px;
+  border: 1px solid rgba(26, 75, 140, 0.06);
+  box-shadow: var(--lx-shadow);
+  display: grid;
+  gap: 14px;
+}
+
+.feLumpLux__chartSvgWrap {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fbfcfe 0%, #f4f7fb 100%);
+  border: 1px solid rgba(26, 75, 140, 0.06);
+  padding: 6px 4px 2px;
+}
+
+.feLumpLux__chartSvg {
+  width: 100%;
+  height: auto;
+  display: block;
+  min-height: 188px;
+}
+
+.feLumpLux__chartGridV {
+  stroke: rgba(148, 163, 184, 0.2);
+  stroke-width: 1;
+}
+
+.feLumpLux__chartAxisX {
+  stroke: rgba(26, 75, 140, 0.12);
+  stroke-width: 1.25;
+}
+
+.feLumpLux__chartTick {
+  font-size: 10px;
+  fill: #8b9cb5;
+  font-family: var(--lx-font);
+  font-weight: 600;
+}
+
+.feLumpLux__legend {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  font-weight: 600;
+  color: #7d8da1;
+}
+
+.feLumpLux__legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.feLumpLux__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.feLumpLux__dot--blue {
+  background: var(--lx-blue);
+}
+
+.feLumpLux__dot--orange {
+  background: var(--lx-orange);
+}
+
+/* SIP Specific */
+.feSipLux__freqSeg {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: #e8eef6;
+  border: 1px solid rgba(26, 75, 140, 0.08);
+  margin-bottom: 12px;
+}
+
+.feSipLux__freqBtn {
+  flex: 1;
+  min-height: 44px;
+  border: none;
+  border-radius: 11px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  background: transparent;
+  cursor: pointer;
+}
+
+.feSipLux__freqBtn.is-active {
+  background: #fff;
+  color: var(--lx-blue, #1a4b8c);
+  box-shadow: 0 2px 10px rgba(26, 75, 140, 0.12);
+}
+
+.feSipLux__fieldHint {
+  margin: 4px 0 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.feSipLux__stepRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.feSipLux__stepTitles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.feSipLux__stepName {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--lx-blue, #1a4b8c);
+  line-height: 1.2;
+}
+
+.feSipLux__stepCaps {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  margin-top: 1px;
+}

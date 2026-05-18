@@ -1,0 +1,528 @@
+/* =============================================
+   HOME PAGE CSS
+   Brand: Navy #002d62 + Orange #ff8c00
+   All new features MUST use CSS variables.
+   ============================================= */
+
+.home-content-wrapper {
+  padding: 68px 16px 20px;
+  background-color: var(--bg-main);
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ── Promotional Carousel ── */
+.promo-carousel-wrapper {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.promo-banner {
+  border-radius: 20px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 160px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0, 45, 98, 0.12);
+}
+
+.promo-content {
+  flex: 1;
+  z-index: 2;
+  max-width: 65%;
+  animation: slideInText 0.5s ease-out;
+}
+
+@keyframes slideInText {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.bank-logo-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.bank-icon-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.bank-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--secondary);
+  letter-spacing: 0.5px;
+}
+
+.promo-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--secondary);
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.promo-subtitle {
+  font-size: 10px;
+  color: #475569;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+.promo-apply-btn {
+  border: none;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--primary), #ffa733);
+  box-shadow: 0 4px 14px rgba(255, 140, 0, 0.35);
+  transition: transform 0.2s;
+}
+
+.promo-apply-btn:hover {
+  transform: translateY(-2px);
+}
+
+.promo-image-container {
+  flex: 0 0 35%;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 1;
+  animation: slideInImage 0.6s ease-out;
+}
+
+@keyframes slideInImage {
+  from {
+    opacity: 0;
+    transform: translateX(20px) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.promo-cards-img {
+  width: 100%;
+  max-width: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+}
+
+/* Carousel Indicators */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.indicator-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.indicator-dot.active {
+  width: 22px;
+  border-radius: 10px;
+  background: var(--primary);
+}
+
+/* ── Section Styles ── */
+.section-container {
+  margin-bottom: 24px;
+}
+
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+
+.section-title-wrapper {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.title-accent-bar {
+  width: 4px;
+  height: 38px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.title-accent-bar.blue {
+  background: var(--secondary);
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--secondary);
+  margin: 0;
+}
+
+.section-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.btn-view-all {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.btn-view-all:hover {
+  color: var(--primary-hover);
+}
+
+/* ── Quick Actions Grid ── */
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.action-item:hover {
+  transform: translateY(-3px);
+}
+
+.action-icon-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 45, 98, 0.08);
+}
+
+.action-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--secondary);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ── Featured Products ── */
+.featured-cards-horizontal-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 4px 4px 20px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.featured-cards-horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.featured-card.horizontal {
+  min-width: 280px;
+  max-width: 280px;
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 45, 98, 0.08);
+  border: 1px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.featured-card.horizontal:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 45, 98, 0.14);
+}
+
+.featured-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.product-logo-box {
+  width: 90px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+}
+
+.bank-logo-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.earn-badge {
+  background: var(--primary-light);
+  padding: 6px 12px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid rgba(255, 140, 0, 0.2);
+}
+
+.earn-badge.green {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #d1fae5;
+}
+
+.featured-card-body h4 {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--secondary);
+  margin-bottom: 4px;
+}
+
+.featured-card-body p {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  height: 32px;
+  overflow: hidden;
+}
+
+.featured-card-footer {
+  display: flex;
+}
+
+.btn-details {
+  width: 100%;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--secondary);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.btn-details:hover {
+  border-color: var(--secondary);
+}
+
+.btn-apply {
+  flex: 1.5;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 45, 98, 0.25);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-apply:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 45, 98, 0.3);
+}
+
+/* ── Testimonials ── */
+.testimonials-horizontal-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 4px 4px 20px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.testimonials-horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.testimonial-card.horizontal {
+  min-width: 300px;
+  max-width: 300px;
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 16px rgba(0, 45, 98, 0.06);
+}
+
+.testimonial-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.user-avatar-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.user-avatar-circle.pink {
+  background: linear-gradient(135deg, #db2777, #f472b6);
+}
+
+.user-info h4 {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--secondary);
+  margin: 0;
+}
+
+.stars-row {
+  display: flex;
+  gap: 2px;
+}
+
+.testimonial-text {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── CTA Section ── */
+.cta-banner-section {
+  margin-top: 24px;
+  padding-bottom: 20px;
+}
+
+.cta-card {
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+  border-radius: 24px;
+  padding: 24px 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 12px 36px rgba(0, 45, 98, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative orange accent line at top */
+.cta-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), #ffa733);
+}
+
+.cta-card h3 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.cta-card p {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.cta-buttons-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cta-icon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  flex: 1;
+}
+
+.icon-wrap {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.icon-wrap:hover {
+  background: rgba(255, 140, 0, 0.3);
+  border-color: rgba(255, 140, 0, 0.5);
+  transform: translateY(-3px);
+}
+
+.cta-icon-btn:active .icon-wrap {
+  transform: scale(0.9);
+}
+
+.cta-icon-btn span {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}

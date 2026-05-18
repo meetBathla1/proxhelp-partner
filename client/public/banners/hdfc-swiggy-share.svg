@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#002d62"/>
+      <stop offset="40%" style="stop-color:#001842"/>
+      <stop offset="70%" style="stop-color:#0a3a7a"/>
+      <stop offset="100%" style="stop-color:#002d62"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff8c00"/>
+      <stop offset="100%" style="stop-color:#ffa833"/>
+    </linearGradient>
+    <linearGradient id="cta" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff8c00"/>
+      <stop offset="100%" style="stop-color:#ff6a00"/>
+    </linearGradient>
+    <linearGradient id="goldBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff8c00"/>
+      <stop offset="50%" style="stop-color:#ffd700"/>
+      <stop offset="100%" style="stop-color:#ff8c00"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.3)"/>
+    </filter>
+    <filter id="orangeShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="rgba(255,140,0,0.35)"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bg)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="740" cy="0" r="180" fill="rgba(255,140,0,0.08)"/>
+  <circle cx="60" cy="600" r="200" fill="rgba(255,140,0,0.06)"/>
+  <circle cx="400" cy="300" r="280" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+  <circle cx="400" cy="300" r="220" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+
+  <!-- Sparkle dots -->
+  <circle cx="120" cy="100" r="3" fill="rgba(255,200,50,0.6)"/>
+  <circle cx="680" cy="160" r="2.5" fill="rgba(255,200,50,0.5)"/>
+  <circle cx="200" cy="480" r="2" fill="rgba(255,200,50,0.5)"/>
+  <circle cx="600" cy="500" r="2.5" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="350" cy="120" r="1.5" fill="rgba(255,255,255,0.25)"/>
+
+  <!-- FINXPERT watermark -->
+  <text x="30" y="40" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="800" fill="rgba(255,255,255,0.2)" letter-spacing="3">FINXPERT</text>
+
+  <!-- Powered by text -->
+  <text x="770" y="38" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.35)" text-anchor="end" letter-spacing="1">Powered by HDFC Bank</text>
+
+  <!-- Top badge -->
+  <rect x="290" y="120" width="220" height="32" rx="16" fill="url(#orange)" filter="url(#orangeShadow)"/>
+  <text x="400" y="141" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="white" text-anchor="middle" letter-spacing="2">⭐ PREMIUM PARTNER OFFER</text>
+
+  <!-- Main title -->
+  <text x="400" y="215" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="900" fill="white" text-anchor="middle" filter="url(#shadow)">Swiggy</text>
+  <text x="400" y="265" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="900" fill="#ff8c00" text-anchor="middle" filter="url(#shadow)">HDFC Bank</text>
+  <text x="400" y="310" font-family="Segoe UI, Arial, sans-serif" font-size="38" font-weight="900" fill="white" text-anchor="middle" filter="url(#shadow)">Credit Card</text>
+
+  <!-- Subtitle -->
+  <text x="400" y="348" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="rgba(255,255,255,0.6)" text-anchor="middle">Unlock premium rewards on every order &amp; purchase</text>
+
+  <!-- Benefit chips -->
+  <!-- Chip 1 -->
+  <rect x="120" y="385" width="160" height="90" rx="16" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <text x="200" y="425" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="900" fill="#ff8c00" text-anchor="middle">10%</text>
+  <text x="200" y="455" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.55)" text-anchor="middle" letter-spacing="1.5">SWIGGY CASHBACK</text>
+
+  <!-- Chip 2 -->
+  <rect x="310" y="385" width="160" height="90" rx="16" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <text x="390" y="425" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="900" fill="#ff8c00" text-anchor="middle">5%</text>
+  <text x="390" y="455" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.55)" text-anchor="middle" letter-spacing="1.5">ONLINE SHOPPING</text>
+
+  <!-- Chip 3 -->
+  <rect x="500" y="385" width="160" height="90" rx="16" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <text x="580" y="425" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="900" fill="#ff8c00" text-anchor="middle">1%</text>
+  <text x="580" y="455" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.55)" text-anchor="middle" letter-spacing="1.5">ALL SPENDS</text>
+
+  <!-- CTA button -->
+  <rect x="270" y="510" width="200" height="48" rx="24" fill="url(#cta)" filter="url(#orangeShadow)"/>
+  <text x="370" y="540" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="white" text-anchor="middle">Apply Now →</text>
+
+  <!-- Lifetime tag -->
+  <text x="500" y="535" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#4ade80" font-weight="700">✓ Lifetime FREE</text>
+  <text x="600" y="535" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.4)">· No Annual Fee</text>
+
+  <!-- Bottom gold bar -->
+  <rect x="0" y="595" width="800" height="5" fill="url(#goldBar)"/>
+</svg>

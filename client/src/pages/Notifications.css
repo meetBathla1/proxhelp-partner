@@ -1,0 +1,138 @@
+.notifications-container {
+  padding: 0;
+  background-color: #ffffff;
+  min-height: 100vh;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Header */
+.notif-header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the title */
+  padding: 10px 16px;
+  background: white;
+  z-index: 10;
+  border-bottom: 1px solid #f1f5f9;
+  min-height: 56px;
+}
+
+.notif-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  text-align: center;
+  line-height: 1;
+}
+
+.back-btn {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%); /* Precisely centers vertically */
+  background: none;
+  border: none;
+  color: #1e293b;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Content */
+.notif-content {
+  padding: 16px;
+}
+
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notif-item {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.notif-item:active {
+  transform: scale(0.98);
+  background: #f8fafc;
+}
+
+.notif-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notif-info {
+  flex: 1;
+}
+
+.notif-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.notif-info h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  flex: 1;
+  padding-right: 8px;
+}
+
+.notif-time {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.notif-info p {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* Empty State */
+.no-notif {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 100px;
+  gap: 16px;
+}
+
+.no-notif p {
+  color: #94a3b8;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}

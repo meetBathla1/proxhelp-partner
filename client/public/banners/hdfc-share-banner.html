@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 800px; height: 600px; overflow: hidden; }
+  
+  .banner {
+    width: 800px;
+    height: 600px;
+    background: linear-gradient(135deg, #002d62 0%, #001842 40%, #0a3a7a 70%, #002d62 100%);
+    position: relative;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  /* Decorative circles */
+  .circle1 {
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(255, 140, 0, 0.12);
+  }
+  .circle2 {
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: rgba(255, 140, 0, 0.08);
+  }
+  .circle3 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* Sparkle dots */
+  .sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 200, 50, 0.7);
+    border-radius: 50%;
+  }
+  .s1 { top: 80px; left: 120px; }
+  .s2 { top: 150px; right: 100px; width: 4px; height: 4px; }
+  .s3 { bottom: 120px; left: 200px; width: 5px; height: 5px; }
+  .s4 { top: 200px; left: 400px; width: 3px; height: 3px; background: rgba(255,255,255,0.4); }
+  .s5 { bottom: 80px; right: 180px; width: 4px; height: 4px; }
+
+  .top-badge {
+    background: linear-gradient(135deg, #ff8c00, #ffa833);
+    padding: 6px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    z-index: 2;
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.35);
+  }
+
+  .main-title {
+    font-size: 40px;
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.2;
+    z-index: 2;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    margin-bottom: 8px;
+  }
+  .main-title .highlight {
+    color: #ff8c00;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    z-index: 2;
+    margin-bottom: 35px;
+    font-weight: 400;
+  }
+
+  .benefits-row {
+    display: flex;
+    gap: 20px;
+    z-index: 2;
+    margin-bottom: 35px;
+  }
+
+  .benefit-chip {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 14px 22px;
+    border-radius: 16px;
+    text-align: center;
+    min-width: 140px;
+  }
+  .benefit-chip .value {
+    font-size: 26px;
+    font-weight: 900;
+    color: #ff8c00;
+    display: block;
+  }
+  .benefit-chip .label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .cta-area {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 2;
+  }
+
+  .cta-btn {
+    background: linear-gradient(135deg, #ff8c00, #ff6a00);
+    color: white;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
+  }
+
+  .lifetime-tag {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+  .lifetime-tag strong {
+    color: #4ade80;
+    font-weight: 700;
+  }
+
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #ff8c00, #ffd700, #ff8c00);
+  }
+
+  .corner-logo {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .corner-logo .logo-text {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .finxpert-badge {
+    position: absolute;
+    top: 25px;
+    left: 30px;
+    z-index: 5;
+    font-size: 14px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="circle1"></div>
+  <div class="circle2"></div>
+  <div class="circle3"></div>
+  <div class="sparkle s1"></div>
+  <div class="sparkle s2"></div>
+  <div class="sparkle s3"></div>
+  <div class="sparkle s4"></div>
+  <div class="sparkle s5"></div>
+
+  <div class="finxpert-badge">FINXPERT</div>
+  <div class="corner-logo">
+    <span class="logo-text">Powered by HDFC Bank</span>
+  </div>
+
+  <div class="top-badge">⭐ Premium Partner Offer</div>
+
+  <div class="main-title">
+    Swiggy <span class="highlight">HDFC Bank</span><br>Credit Card
+  </div>
+  <div class="subtitle">Unlock premium rewards on every order & purchase</div>
+
+  <div class="benefits-row">
+    <div class="benefit-chip">
+      <span class="value">10%</span>
+      <span class="label">Swiggy Cashback</span>
+    </div>
+    <div class="benefit-chip">
+      <span class="value">5%</span>
+      <span class="label">Online Shopping</span>
+    </div>
+    <div class="benefit-chip">
+      <span class="value">1%</span>
+      <span class="label">All Spends</span>
+    </div>
+  </div>
+
+  <div class="cta-area">
+    <div class="cta-btn">Apply Now →</div>
+    <div class="lifetime-tag"><strong>✓ Lifetime FREE</strong> · No Annual Fee</div>
+  </div>
+
+  <div class="bottom-bar"></div>
+</div>
+</body>
+</html>

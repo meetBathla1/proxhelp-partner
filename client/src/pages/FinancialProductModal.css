@@ -1,0 +1,213 @@
+/* ── Product Details Modal ── */
+.product-details-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 2000; /* Higher than bottom nav (1000) to layer correctly */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Opens from the top */
+  padding: 0;
+  overflow: hidden; /* Prevent the overlay itself from scrolling */
+}
+
+@media (min-width: 768px) {
+  .product-details-modal-overlay {
+    align-items: center;
+    padding: 20px;
+  }
+}
+
+.product-details-modal-content {
+  background: #ffffff;
+  width: 100%;
+  max-width: 500px;
+  height: auto; /* Shrinks to fit content, removing empty white space */
+  max-height: 100%; /* Prevents extending past the screen */
+  border-radius: 0 0 24px 24px; /* Beautiful rounded bottom edge since it slides from top */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent the modal wrapper from scrolling */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+@media (min-width: 768px) {
+  .product-details-modal-content {
+    height: auto;
+    max-height: 90vh;
+    border-radius: 0 0 24px 24px;
+  }
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.btn-close-modal {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.btn-close-modal:hover {
+  background: #e2e8f0;
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+.modal-brand-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.modal-bank-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 4px;
+}
+
+.modal-brand-text h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: var(--navy);
+}
+
+.modal-earn-badge {
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.modal-section {
+  margin-bottom: 24px;
+}
+
+.modal-section h5 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+
+.modal-section p {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.modal-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-features-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.modal-fees-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.modal-fee-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modal-fee-item span {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.modal-fee-item strong {
+  font-size: 16px;
+  color: var(--navy);
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #f1f5f9;
+  background: #ffffff;
+}
+
+.btn-modal-action {
+  width: 100%;
+  padding: 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-modal-action:hover {
+  opacity: 0.9;
+}

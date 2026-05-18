@@ -1,0 +1,19 @@
+# Node dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Secrets & Configuration
+server/.env
+.env.local
+.env.*.local
+
+# Production builds
+client/dist/
+client/dist-ssr/
+
+# System/Editor files
+.vscode/
+.idea/
+.DS_Store
+*.log

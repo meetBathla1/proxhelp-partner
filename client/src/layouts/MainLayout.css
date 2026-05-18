@@ -1,0 +1,192 @@
+/* =============================================
+   MAIN LAYOUT — Header + Bottom Navigation
+   Uses global brand tokens from index.css
+   ============================================= */
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  padding-bottom: 70px;
+}
+
+/* ── Top Header ── */
+.profile-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  background: var(--secondary);
+  padding: 0 20px;
+  z-index: 1001;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 45, 98, 0.25);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Avatar with orange gradient */
+.profile-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), #ffa733);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.2;
+}
+
+.wallet-balance-small {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #86efac;
+  font-weight: 600;
+}
+
+/* Header Right Buttons */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-wallet-btn {
+  background: rgba(255, 140, 0, 0.2) !important;
+  color: var(--primary) !important;
+  border: 1px solid rgba(255, 140, 0, 0.3) !important;
+}
+
+.icon-btn-rounded {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.85);
+  transition: background 0.2s;
+}
+
+.icon-btn-rounded:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: white;
+}
+
+/* ── App Body (pushed below fixed header) ── */
+.app-main {
+  flex: 1;
+}
+
+/* ── Bottom Navigation ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  background: white;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 8px;
+  z-index: 1000;
+  box-shadow: 0 -4px 20px rgba(0, 45, 98, 0.08);
+}
+
+.nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 12px;
+  margin: 0 2px;
+}
+
+.nav-link.active {
+  color: var(--secondary);
+}
+
+.nav-link svg {
+  transition: transform 0.25s ease;
+}
+
+.nav-link.active svg {
+  color: var(--primary);
+  transform: translateY(-2px);
+  filter: drop-shadow(0 2px 6px rgba(255, 140, 0, 0.4));
+}
+
+/* Active indicator dot */
+.nav-link.active::after {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  margin-top: -2px;
+}
+
+/* ── Responsive: Tablet / Desktop ── */
+@media (min-width: 769px) {
+  .app-container {
+    padding-bottom: 0;
+    flex-direction: row;
+  }
+
+  .bottom-nav {
+    top: 68px;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    width: 80px;
+    height: auto;
+    flex-direction: column;
+    padding: 20px 0;
+    border-top: none;
+    border-right: 1px solid var(--border);
+    box-shadow: 4px 0 20px rgba(0, 45, 98, 0.06);
+  }
+
+  .nav-link {
+    font-size: 10px;
+    padding: 14px 0;
+  }
+}

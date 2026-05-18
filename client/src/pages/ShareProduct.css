@@ -1,0 +1,304 @@
+.share-product-page {
+  background-color: #f0f4f8;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ── Professional Header ── */
+.share-header {
+  background: linear-gradient(135deg, #001a3d 0%, #002d62 50%, #003a7a 100%);
+  padding: 20px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 20, 50, 0.25);
+}
+
+.share-header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.btn-back-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-back-circle:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Content Area ── */
+.share-content-scroll {
+  padding: 16px;
+  margin-top: 0;
+}
+
+/* ── Shareable Image Card ── */
+.shareable-image-card {
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 45, 98, 0.1);
+  margin-bottom: 16px;
+}
+
+.main-visual {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: #e2e8f0;
+}
+
+.service-promo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder-visual {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.placeholder-visual h3 {
+  margin-top: 15px;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.brand-overlay {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.overlay-bank-logo {
+  height: 18px;
+  max-width: 90px;
+  object-fit: contain;
+}
+
+.partner-identity-bar {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fdfdfd;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.partner-avatar-small {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), #ffa733);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.partner-text-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.p-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+.p-phone {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* ── Benefits Preview ── */
+.benefits-preview-section {
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  margin-bottom: 16px;
+}
+
+.benefits-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.benefits-header h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--secondary);
+  margin: 0;
+}
+
+.share-description-box {
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.share-description-box p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+.apply-link-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.link-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.link-text {
+  font-size: 11px;
+  color: var(--secondary);
+  font-weight: 600;
+  word-break: break-all;
+  text-decoration: underline;
+}
+
+/* ── Actions ── */
+.share-actions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lang-selector {
+  display: flex;
+  background: #e2e8f0;
+  padding: 3px;
+  border-radius: 100px;
+  align-self: flex-start;
+}
+
+.lang-selector button {
+  border: none;
+  background: none;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 100px;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.lang-selector button.active {
+  background: white;
+  color: var(--secondary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.action-buttons-row {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-copy-link {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  border-radius: 14px;
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: var(--secondary);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-copy-link:active {
+  background: #f1f5f9;
+}
+
+.btn-main-share {
+  flex: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #002d62, #003a7a);
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 45, 98, 0.3);
+  transition: all 0.2s;
+}
+
+.btn-main-share:active {
+  transform: scale(0.97);
+}
+
+/* ── Loading & Error ── */
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 16px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.error-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 16px;
+  color: #ef4444;
+  font-weight: 600;
+}

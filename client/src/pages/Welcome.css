@@ -1,0 +1,100 @@
+.welcome-page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  padding: 30px 24px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.welcome-header {
+  margin-bottom: 10px;
+}
+
+.welcome-logo {
+  height: 32px;
+  object-fit: contain;
+  mix-blend-mode: multiply; /* Removes white background from logo */
+}
+
+.welcome-illustration-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 320px;
+}
+
+.welcome-illustration {
+  width: 100%;
+  max-height: 40vh;
+  object-fit: contain;
+}
+
+.welcome-text-content {
+  margin-top: 10px;
+  padding: 0 10px;
+}
+
+.welcome-text-content h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--secondary); /* Navy */
+  margin-bottom: 8px;
+}
+
+.welcome-text-content p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.welcome-footer {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.pagination-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e2e8f0;
+}
+
+.dot.active {
+  width: 24px;
+  border-radius: 4px;
+  background: var(--primary); /* Orange */
+}
+
+.btn-continue {
+  width: 100%;
+  background: var(--secondary); /* Navy button as per screenshot */
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-continue:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}

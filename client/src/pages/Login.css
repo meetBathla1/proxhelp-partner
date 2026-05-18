@@ -1,0 +1,209 @@
+.login-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f4f5f9; /* Slight off-white background as seen on the edges of the screenshot */
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.login-content {
+  background: #ffffff;
+  border-radius: 32px;
+  width: 100%;
+  max-width: 400px;
+  padding: 24px 32px; /* Decreased padding top/bottom */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 20px; /* Decreased margin */
+}
+
+.login-logo {
+  height: 60px; /* Increased size significantly */
+  object-fit: contain;
+  margin: 0 auto 12px;
+  display: block;
+  mix-blend-mode: multiply; /* Helps remove white background if present */
+}
+
+.login-title {
+  font-size: 28px; /* Slightly decreased to save space */
+  font-weight: 800;
+  color: var(--secondary); /* Navy */
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.login-subtitle {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Decreased gap */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+.clean-input {
+  width: 100%;
+  padding: 12px 16px; /* Decreased padding */
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px; /* Decreased radius slightly */
+  font-size: 15px;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.clean-input::placeholder {
+  color: #94a3b8;
+}
+
+.clean-input:focus {
+  border-color: var(--primary);
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-top: -4px; /* Pull it slightly closer */
+}
+
+.forgot-password {
+  color: var(--primary); /* Orange as per screenshot */
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.btn-signin {
+  background: linear-gradient(135deg, var(--primary), #ffa733);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px rgba(255, 140, 0, 0.3);
+}
+
+.btn-signin:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 140, 0, 0.4);
+}
+
+.btn-signin:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.login-footer {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+  display: none; /* The screenshot doesn't show this, but keeping it hidden or just removing it is fine. I'll hide it to match screenshot perfectly. */
+}
+
+/* Custom Checkbox */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  user-select: none;
+  color: #1e293b;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+  border-color: var(--primary);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-container .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: center;
+}
