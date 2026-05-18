@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, ArrowLeft, CheckCircle, Info, AlertCircle, Clock } from 'lucide-react';
+import { Bell, ArrowLeft, CheckCircle, Info, AlertCircle, Clock, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './Notifications.css';
 
