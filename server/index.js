@@ -97,6 +97,37 @@ const initDB = async () => {
         // Migration/Fix: Ensure all test balance updates are COMPLETED
         await db.query('UPDATE wallet_transactions SET status = "completed" WHERE description = "Test Balance Update"');
         console.log('Verified test balance statuses');
+
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS relationship_managers (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                phone VARCHAR(20),
+                whatsapp VARCHAR(20),
+                profile_url VARCHAR(255),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('Relationship Managers table ensured');
+
+        try {
+            await db.query('ALTER TABLE partners ADD COLUMN rm_id INT NULL');
+            await db.query('ALTER TABLE partners ADD FOREIGN KEY (rm_id) REFERENCES relationship_managers(id)');
+        } catch (e) {
+            // Column might already exist
+        }
+        try {
+            await db.query('ALTER TABLE partners ADD COLUMN username VARCHAR(255) NULL AFTER name');
+        } catch (e) {
+            // Column might already exist
+        }
+        try {
+            await db.query('ALTER TABLE partners ADD COLUMN profile_url VARCHAR(255) NULL AFTER username');
+        } catch (e) {
+            // Column might already exist
+        }
+        console.log('Partners RM, Username, and profile_url columns ensured');
+
     } catch (err) {
         console.error('Database initialization error:', err);
     }
@@ -517,7 +548,7 @@ app.post('/api/register', async (req, res) => {
         res.status(201).json({ 
             message: 'Account created successfully!', 
             token,
-            user: { id: result.insertId, name: fullName, email, phone, role: 'partner' }
+            user: { id: result.insertId, name: fullName, username: fullName, email, phone, role: 'partner', profile_url: null }
         });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -537,8 +568,63 @@ app.post('/api/login', async (req, res) => {
         if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
         const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '365d' });
-        res.json({ token, user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role } });
+        res.json({ token, user: { id: user.id, name: user.name, username: user.username || user.name, email: user.email, phone: user.phone, role: user.role, profile_url: user.profile_url } });
     } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Profile endpoints
+app.get('/api/profile', authenticateToken, async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT id, name, username, email, phone, role, profile_url FROM partners WHERE id = ?', [req.user.id]);
+        if (rows.length === 0) return res.status(404).json({ message: 'User not found' });
+        res.json(rows[0]);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+app.put('/api/profile/update', authenticateToken, upload.single('profile_photo'), async (req, res) => {
+    const { name, username, email, phone } = req.body;
+    const partnerId = req.user.id;
+    try {
+        let profile_url = null;
+        if (req.file) {
+            profile_url = `/uploads/${req.file.filename}`;
+        }
+        
+        let query = 'UPDATE partners SET name=?, username=?, email=?, phone=?';
+        let params = [name, username, email, phone];
+        
+        if (profile_url) {
+            query += ', profile_url=?';
+            params.push(profile_url);
+        }
+        
+        query += ' WHERE id=?';
+        params.push(partnerId);
+        
+        await db.query(query, params);
+        
+        // Fetch updated user
+        const [rows] = await db.query('SELECT * FROM partners WHERE id = ?', [partnerId]);
+        const user = rows[0];
+        
+        res.json({
+            message: 'Profile updated successfully',
+            user: { 
+                id: user.id, 
+                name: user.name, 
+                username: user.username || user.name, 
+                email: user.email, 
+                phone: user.phone, 
+                role: user.role,
+                profile_url: user.profile_url
+            }
+        });
+    } catch (error) {
+        console.error('Update profile error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
@@ -632,6 +718,54 @@ app.get('/api/products/:serviceName', async (req, res) => {
         res.status(500).json({ message: 'Error fetching products' });
     }
 });
+
+
+// ── GET PARTNER LEADS ──
+app.get('/api/leads', authenticateToken, async (req, res) => {
+    try {
+        const partner_id = req.user.id;
+        
+        // Direct Leads
+        const [myLeads] = await db.query(
+            'SELECT l.*, p.bank_name as bank FROM leads l LEFT JOIN products p ON l.product_id = p.id WHERE l.partner_id = ? ORDER BY l.created_at DESC',
+            [partner_id]
+        );
+        
+        // Referral Leads
+        const [referralLeads] = await db.query(
+            'SELECT l.*, p.bank_name as bank, agent.name as agent_name FROM leads l LEFT JOIN products p ON l.product_id = p.id JOIN partners agent ON l.partner_id = agent.id WHERE agent.referred_by = ? ORDER BY l.created_at DESC',
+            [partner_id]
+        );
+        
+        res.json({ myLeads, referralLeads });
+    } catch (err) {
+        console.error('Error fetching leads:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// ── GET ADMIN AGENT LEADS ──
+app.get('/api/admin/partner/:id/leads', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const partner_id = req.params.id;
+        
+        const [myLeads] = await db.query(
+            'SELECT l.*, p.bank_name as bank FROM leads l LEFT JOIN products p ON l.product_id = p.id WHERE l.partner_id = ? ORDER BY l.created_at DESC',
+            [partner_id]
+        );
+        
+        const [referralLeads] = await db.query(
+            'SELECT l.*, p.bank_name as bank, agent.name as agent_name FROM leads l LEFT JOIN products p ON l.product_id = p.id JOIN partners agent ON l.partner_id = agent.id WHERE agent.referred_by = ? ORDER BY l.created_at DESC',
+            [partner_id]
+        );
+        
+        res.json({ myLeads, referralLeads });
+    } catch (err) {
+        console.error('Error fetching admin leads:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 
 // ── ADMIN MANAGEMENT ROUTES ──
 
@@ -746,8 +880,13 @@ app.post('/api/admin/kyc/:id/status', authenticateToken, isAdmin, async (req, re
         await db.query('UPDATE kyc_verifications SET status = ? WHERE id = ?', [status, id]);
 
         // Notify Partner
-        const [[kyc]] = await db.query('SELECT partner_id FROM kyc_verifications WHERE id = ?', [id]);
+        const [[kyc]] = await db.query('SELECT partner_id, full_name FROM kyc_verifications WHERE id = ?', [id]);
         if (kyc) {
+            if (status === 'approved') {
+                // Automatically fetch and update the partner's legal name from the verified KYC application
+                await db.query('UPDATE partners SET name = ? WHERE id = ?', [kyc.full_name, kyc.partner_id]);
+            }
+
             const title = status === 'approved' ? 'KYC Verified Successfully' : 'KYC Verification Rejected';
             const message = status === 'approved' 
                 ? 'Your identity verification is complete. You can now access all premium services.' 
@@ -762,6 +901,7 @@ app.post('/api/admin/kyc/:id/status', authenticateToken, isAdmin, async (req, re
 
         res.json({ message: 'KYC status updated' });
     } catch (error) {
+        console.error('KYC update error:', error);
         res.status(500).json({ message: 'Error updating KYC status' });
     }
 });
@@ -789,6 +929,69 @@ app.get('/api/dashboard/leads', authenticateToken, async (req, res) => {
         res.json(leads);
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// ── RELATIONSHIP MANAGER ROUTES ──
+
+app.get('/api/admin/rms', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const [rms] = await db.query('SELECT * FROM relationship_managers ORDER BY created_at DESC');
+        res.json(rms);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching RMs' });
+    }
+});
+
+app.post('/api/admin/rms', authenticateToken, isAdmin, async (req, res) => {
+    const { id, name, phone, whatsapp, profile_url } = req.body;
+    try {
+        if (id) {
+            await db.query(
+                'UPDATE relationship_managers SET name=?, phone=?, whatsapp=?, profile_url=? WHERE id=?',
+                [name, phone, whatsapp, profile_url, id]
+            );
+            res.json({ message: 'RM updated' });
+        } else {
+            await db.query(
+                'INSERT INTO relationship_managers (name, phone, whatsapp, profile_url) VALUES (?, ?, ?, ?)',
+                [name, phone, whatsapp, profile_url]
+            );
+            res.status(201).json({ message: 'RM created' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error saving RM' });
+    }
+});
+
+app.post('/api/admin/partners/:id/assign-rm', authenticateToken, isAdmin, async (req, res) => {
+    const partnerId = req.params.id;
+    const { rm_id } = req.body;
+    try {
+        await db.query('UPDATE partners SET rm_id = ? WHERE id = ?', [rm_id, partnerId]);
+        res.json({ message: 'RM assigned successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error assigning RM' });
+    }
+});
+
+app.get('/api/profile/rm', authenticateToken, async (req, res) => {
+    try {
+        const partner_id = req.user.id;
+        const [rows] = await db.query(`
+            SELECT rm.* 
+            FROM partners p
+            JOIN relationship_managers rm ON p.rm_id = rm.id
+            WHERE p.id = ?
+        `, [partner_id]);
+        
+        if (rows.length > 0) {
+            res.json(rows[0]);
+        } else {
+            res.json(null);
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching assigned RM' });
     }
 });
 

@@ -58,7 +58,7 @@ const NPSCalculator = () => {
                 className="feLumpLux__input"
                 type="number"
                 value={monthly}
-                onChange={(e) => setMonthly(Number(e.target.value))}
+                onChange={(e) => setMonthly(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </div>
           </label>
@@ -70,7 +70,7 @@ const NPSCalculator = () => {
                 className="feLumpLux__input"
                 type="number"
                 value={age}
-                onChange={(e) => setAge(Number(e.target.value))}
+                onChange={(e) => setAge(e.target.value === '' ? '' : Number(e.target.value))}
               />
               <span className="feLumpLux__suffix feLumpLux__suffix--text">Yrs</span>
             </div>
@@ -84,7 +84,7 @@ const NPSCalculator = () => {
                 className="feLumpLux__input"
                 type="number"
                 value={rate}
-                onChange={(e) => setRate(Number(e.target.value))}
+                onChange={(e) => setRate(e.target.value === '' ? '' : Number(e.target.value))}
               />
               <span className="feLumpLux__suffix">%</span>
             </div>

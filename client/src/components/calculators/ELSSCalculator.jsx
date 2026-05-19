@@ -59,7 +59,7 @@ const ELSSCalculator = () => {
                 className="feLumpLux__input"
                 type="number"
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </div>
           </label>
@@ -71,7 +71,7 @@ const ELSSCalculator = () => {
                 className="feLumpLux__input"
                 type="number"
                 value={rate}
-                onChange={(e) => setRate(Number(e.target.value))}
+                onChange={(e) => setRate(e.target.value === '' ? '' : Number(e.target.value))}
               />
               <span className="feLumpLux__suffix">%</span>
             </div>
@@ -84,7 +84,7 @@ const ELSSCalculator = () => {
                 className="feLumpLux__input"
                 type="number"
                 value={years}
-                onChange={(e) => setYears(Number(e.target.value))}
+                onChange={(e) => setYears(e.target.value === '' ? '' : Number(e.target.value))}
               />
               <span className="feLumpLux__suffix feLumpLux__suffix--text">Yrs</span>
             </div>

@@ -67,8 +67,8 @@ const PPFCalculator = () => {
                 max={150000}
                 step={500}
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
-                onBlur={() => setAmount(clamp(Math.round(amount), 500, 150000))}
+                onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                onBlur={() => setAmount(amount === '' ? '' : clamp(Math.round(Number(amount)), 500, 150000))}
               />
             </div>
             <span className="feSipLux__fieldHint">Max limit: ₹1,50,000 per year</span>
@@ -101,8 +101,8 @@ const PPFCalculator = () => {
                 max={50}
                 step={5}
                 value={years}
-                onChange={(e) => setYears(Number(e.target.value))}
-                onBlur={() => setYears(clamp(Math.round(years), 15, 50))}
+                onChange={(e) => setYears(e.target.value === '' ? '' : Number(e.target.value))}
+                onBlur={() => setYears(years === '' ? '' : clamp(Math.round(Number(years)), 15, 50))}
               />
               <span className="feLumpLux__suffix feLumpLux__suffix--text">Yrs</span>
             </div>

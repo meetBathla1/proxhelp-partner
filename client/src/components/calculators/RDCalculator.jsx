@@ -65,8 +65,8 @@ const RDCalculator = () => {
                 max={1000000}
                 step={500}
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
-                onBlur={() => setAmount(clamp(Math.round(amount), 500, 1000000))}
+                onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                onBlur={() => setAmount(amount === '' ? '' : clamp(Math.round(Number(amount)), 500, 1000000))}
               />
             </div>
           </label>
@@ -81,8 +81,8 @@ const RDCalculator = () => {
                 max={15}
                 step={0.1}
                 value={rate}
-                onChange={(e) => setRate(Number(e.target.value))}
-                onBlur={() => setRate(clamp(rate, 1, 15))}
+                onChange={(e) => setRate(e.target.value === '' ? '' : Number(e.target.value))}
+                onBlur={() => setRate(rate === '' ? '' : clamp(Number(rate), 1, 15))}
               />
               <span className="feLumpLux__suffix">%</span>
             </div>
@@ -98,8 +98,8 @@ const RDCalculator = () => {
                 max={25}
                 step={1}
                 value={years}
-                onChange={(e) => setYears(Number(e.target.value))}
-                onBlur={() => setYears(clamp(Math.round(years), 1, 25))}
+                onChange={(e) => setYears(e.target.value === '' ? '' : Number(e.target.value))}
+                onBlur={() => setYears(years === '' ? '' : clamp(Math.round(Number(years)), 1, 25))}
               />
               <span className="feLumpLux__suffix feLumpLux__suffix--text">Yrs</span>
             </div>

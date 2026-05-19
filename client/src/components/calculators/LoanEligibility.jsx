@@ -72,7 +72,7 @@ const LoanEligibility = () => {
                 max={1000000}
                 step={1000}
                 value={salary}
-                onChange={(e) => setSalary(Number(e.target.value))}
+                onChange={(e) => setSalary(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </div>
           </label>
@@ -88,7 +88,7 @@ const LoanEligibility = () => {
                 max={500000}
                 step={500}
                 value={currentEmi}
-                onChange={(e) => setCurrentEmi(Number(e.target.value))}
+                onChange={(e) => setCurrentEmi(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </div>
           </label>
@@ -119,7 +119,7 @@ const LoanEligibility = () => {
                 max={25}
                 step={0.1}
                 value={rate}
-                onChange={(e) => setRate(Number(e.target.value))}
+                onChange={(e) => setRate(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </label>
             <label className="feLumpLux__field">
@@ -131,7 +131,7 @@ const LoanEligibility = () => {
                 max={30}
                 step={1}
                 value={years}
-                onChange={(e) => setYears(Number(e.target.value))}
+                onChange={(e) => setYears(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </label>
           </div>

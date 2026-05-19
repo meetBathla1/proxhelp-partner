@@ -52,7 +52,7 @@ const GoalPlanner = () => {
                 max={100000000}
                 step={50000}
                 value={goalAmount}
-                onChange={(e) => setGoalAmount(Number(e.target.value))}
+                onChange={(e) => setGoalAmount(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </div>
           </label>
@@ -67,7 +67,7 @@ const GoalPlanner = () => {
                 max={50}
                 step={1}
                 value={years}
-                onChange={(e) => setYears(Number(e.target.value))}
+                onChange={(e) => setYears(e.target.value === '' ? '' : Number(e.target.value))}
               />
               <span className="feLumpLux__suffix feLumpLux__suffix--text">Yrs</span>
             </div>
@@ -83,7 +83,7 @@ const GoalPlanner = () => {
                 max={30}
                 step={0.1}
                 value={returnRate}
-                onChange={(e) => setReturnRate(Number(e.target.value))}
+                onChange={(e) => setReturnRate(e.target.value === '' ? '' : Number(e.target.value))}
               />
               <span className="feLumpLux__suffix">%</span>
             </div>

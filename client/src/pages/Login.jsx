@@ -31,7 +31,7 @@ const Login = () => {
     <div className="login-page-wrapper">
       <div className="login-content animate-fade-in">
         <div className="login-header">
-          <img src="/logo.png" alt="Finxpert Logo" className="login-logo" />
+          <img src="/finexprt-logo.png" alt="FinExprt Logo" className="login-logo" />
           <h1 className="login-title">Finxpert<br/>Partner</h1>
           <p className="login-subtitle">Welcome back! Please<br/>enter your details.</p>
         </div>

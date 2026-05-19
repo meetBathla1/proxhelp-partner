@@ -10,7 +10,8 @@ import {
   ExternalLink,
   Info,
   Globe,
-  Smartphone
+  Smartphone,
+  Download
 } from 'lucide-react';
 import './ShareProduct.css';
 
@@ -21,6 +22,7 @@ const ShareProduct = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [activeLang, setActiveLang] = useState('English');
+  const [shareFile, setShareFile] = useState(null);
   
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const partnerId = user.id || 'partner';
@@ -28,6 +30,25 @@ const ShareProduct = () => {
   // Unique link generation
   const uniqueApplyLink = `${window.location.origin}/apply/${productId}?partner=${partnerId}`;
   
+  const getPngBlobFromUrl = (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width || 800;
+        canvas.height = img.height || 400;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(resolve, 'image/png');
+      };
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = url;
+    });
+  };
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -43,6 +64,21 @@ const ShareProduct = () => {
     fetchProduct();
   }, [productId]);
 
+  useEffect(() => {
+    if (product && product.share_image_url) {
+      const preloadImage = async () => {
+        try {
+          const blob = await getPngBlobFromUrl(product.share_image_url);
+          const file = new File([blob], `promo.png`, { type: 'image/png' });
+          setShareFile(file);
+        } catch (e) {
+          console.error('Failed to preload share image', e);
+        }
+      };
+      preloadImage();
+    }
+  }, [product]);
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(uniqueApplyLink);
     setCopied(true);
@@ -51,20 +87,57 @@ const ShareProduct = () => {
 // Removed duplicate copy logic
 
   const handleNativeShare = async () => {
-    const shareData = {
+    const shareTextWithLink = `Apply for ${product.name} using my partner link!\n\n${uniqueApplyLink}`;
+    const shareTextWithoutLink = `Apply for ${product.name} using my partner link!`;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    let sharePayload = {
       title: product.name,
-      text: `Apply for ${product.name} using my partner link!`,
-      url: uniqueApplyLink,
+      text: shareTextWithoutLink,
+      url: uniqueApplyLink
+    };
+
+    if (isMobile && shareFile && navigator.canShare && navigator.canShare({ files: [shareFile] })) {
+      sharePayload = {
+        title: product.name,
+        text: shareTextWithLink,
+        files: [shareFile]
+      };
+    }
+
+    const fallbackToWhatsApp = () => {
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(shareTextWithLink)}`;
+      window.open(waUrl, '_blank');
     };
 
     if (navigator.share) {
       try {
-        await navigator.share(shareData);
+        await navigator.share(sharePayload);
       } catch (err) {
         console.error('Share failed:', err);
+        // If native share fails (e.g. Chrome DevTools on Windows blocks it), 
+        // fallback directly to WhatsApp sharing since that is the primary use case.
+        fallbackToWhatsApp(); 
       }
     } else {
-      handleCopyLink();
+      fallbackToWhatsApp();
+    }
+  };
+
+  const handleDownloadImage = async () => {
+    if (!product.share_image_url) return;
+    try {
+      const blob = await getPngBlobFromUrl(product.share_image_url);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${product.name.replace(/\s+/g, '_')}_Promo.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Download failed', e);
     }
   };
 
@@ -132,15 +205,20 @@ const ShareProduct = () => {
         <div className="share-actions-container">
 
           <div className="action-buttons-row">
-            <button className="btn-copy-link" onClick={handleCopyLink}>
-              {copied ? <CheckCircle2 size={20} /> : <Copy size={20} />}
-              <span>{copied ? 'Copied!' : 'Copy Link'}</span>
+            <button className="btn-copy-link" onClick={() => window.open(uniqueApplyLink, '_blank')}>
+              <ExternalLink size={20} />
+              <span>Apply Now</span>
             </button>
             <button className="btn-main-share" onClick={handleNativeShare}>
               <Share2 size={20} />
               <span>Share Product</span>
             </button>
           </div>
+          
+          <button className="btn-copy-link" style={{ width: '100%', marginTop: '12px' }} onClick={handleDownloadImage}>
+            <Download size={20} />
+            <span>Download Promo Image</span>
+          </button>
         </div>
       </div>
     </div>

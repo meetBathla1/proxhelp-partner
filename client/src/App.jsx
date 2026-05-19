@@ -10,6 +10,7 @@ import Wallet from './pages/Wallet';
 import Transactions from './pages/Transactions';
 import ManageBank from './pages/ManageBank';
 import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 import DigitalID from './pages/DigitalID';
 import HelpSupport from './pages/HelpSupport';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -48,6 +49,7 @@ function App() {
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/manage-bank" element={<ManageBank />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="/digital-id" element={<DigitalID />} />
               <Route path="/support" element={<HelpSupport />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />

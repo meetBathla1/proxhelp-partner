@@ -47,7 +47,7 @@ const GratuityCalculator = () => {
                 max={10000000}
                 step={1000}
                 value={monthlySalary}
-                onChange={(e) => setMonthlySalary(Number(e.target.value))}
+                onChange={(e) => setMonthlySalary(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </div>
           </label>
@@ -62,7 +62,7 @@ const GratuityCalculator = () => {
                 max={50}
                 step={1}
                 value={years}
-                onChange={(e) => setYears(Number(e.target.value))}
+                onChange={(e) => setYears(e.target.value === '' ? '' : Number(e.target.value))}
               />
               <span className="feLumpLux__suffix feLumpLux__suffix--text">Yrs</span>
             </div>

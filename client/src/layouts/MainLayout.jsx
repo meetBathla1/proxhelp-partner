@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Home as HomeIcon, 
@@ -16,6 +16,29 @@ const MainLayout = () => {
   const location = useLocation();
   const isHomePage = location.pathname === '/home' || location.pathname === '/';
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [balance, setBalance] = useState(0);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const res = await fetch('http://localhost:5000/api/wallet/stats', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setBalance(data.currentBalance || 0);
+        }
+      } catch (err) {
+        console.error('Failed to fetch wallet balance', err);
+      }
+    };
+    
+    if (isHomePage) {
+      fetchBalance();
+    }
+  }, [isHomePage, location.pathname]);
 
   return (
     <div className="app-container">
@@ -23,12 +46,18 @@ const MainLayout = () => {
       {isHomePage && (
         <header className="mobile-header profile-header">
           <div className="header-left" onClick={() => navigate('/profile')} style={{ cursor: 'pointer' }}>
-            <div className="profile-avatar">{user.name?.charAt(0).toUpperCase() || 'M'}</div>
+            <div className="profile-avatar" style={{ overflow: 'hidden' }}>
+              {user.profile_url ? (
+                <img src={`http://localhost:5000${user.profile_url}`} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                user.name?.charAt(0).toUpperCase() || 'M'
+              )}
+            </div>
             <div className="user-info">
               <span className="user-name">{user.name || 'User'}</span>
               <div className="wallet-balance-small">
                 <span className="wallet-icon">💳</span>
-                <span>₹0.0</span>
+                <span>₹{parseFloat(balance).toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
               </div>
             </div>
           </div>

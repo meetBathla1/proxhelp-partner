@@ -10,7 +10,10 @@ import {
   LogOut,
   Shield,
   CheckCircle,
-  Clock
+  Clock,
+  MessageSquare,
+  Phone,
+  UserCheck
 } from 'lucide-react';
 import KYCModal from '../components/KYCModal';
 import './Profile.css';
@@ -18,9 +21,28 @@ import './Profile.css';
 const Profile = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [profileData, setProfileData] = useState(user);
   const [agentCode, setAgentCode] = useState('');
   const [kycStatus, setKycStatus] = useState(null); // null, 'pending', 'approved', 'rejected'
   const [showKycModal, setShowKycModal] = useState(false);
+  const [rm, setRm] = useState(null);
+
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch('http://localhost:5000/api/profile', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setProfileData(data);
+        localStorage.setItem('user', JSON.stringify(data));
+      }
+    } catch (err) {
+      console.error('Failed to fetch profile details', err);
+    }
+  };
 
   const fetchKycStatus = async () => {
     try {
@@ -62,16 +84,31 @@ const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    let storedCode = localStorage.getItem('agentCode');
-    if (!storedCode) {
-      const randomDigits = Math.floor(1000000 + Math.random() * 9000000);
-      storedCode = `CK${randomDigits}`;
-      localStorage.setItem('agentCode', storedCode);
+  const fetchRM = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch('http://localhost:5000/api/profile/rm', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setRm(await res.json());
+      }
+    } catch (err) {
+      console.error('Failed to fetch RM', err);
     }
-    setAgentCode(storedCode);
+  };
+
+  useEffect(() => {
+    if (user && user.id) {
+      setAgentCode(`FIN${1000 + parseInt(user.id)}`);
+    } else {
+      setAgentCode('FIN1001');
+    }
     fetchKycStatus();
     fetchWalletStats();
+    fetchRM();
+    fetchProfile();
   }, []);
 
   const handleLogout = () => {
@@ -94,6 +131,12 @@ const Profile = () => {
       onClick: () => navigate('/digital-id')
     },
     { 
+      icon: <Settings size={22} />, 
+      title: 'Settings', 
+      subtitle: 'Manage your profile details & password',
+      onClick: () => navigate('/settings')
+    },
+    { 
       icon: <HelpCircle size={22} />, 
       title: 'Help & Support', 
       subtitle: 'Raise a ticket or view your queries',
@@ -111,12 +154,20 @@ const Profile = () => {
     <div className="profile-container animate-fade-in">
       {/* ── User Header ── */}
       <div className="profile-header-main">
+        <button className="profile-settings-gear" onClick={() => navigate('/settings')} title="Settings">
+          <Settings size={22} />
+        </button>
         <div className="profile-avatar-large">
-          {user.name?.charAt(0).toUpperCase() || 'M'}
+          {profileData.profile_url ? (
+            <img src={`http://localhost:5000${profileData.profile_url}`} alt="Profile" className="profile-avatar-img" />
+          ) : (
+            (profileData.username || profileData.name || 'M').charAt(0).toUpperCase()
+          )}
         </div>
-        <h2 className="profile-name-main">{user.name || 'Meet'}</h2>
-        <p className="profile-email-main">{user.email || 'bathlameet5@gmail.com'}</p>
-        <p className="profile-phone-main">{user.phone || '8168707143'}</p>
+        <h2 className="profile-name-main">{profileData.username || profileData.name || 'Meet'}</h2>
+        <p className="profile-email-main">{profileData.email || 'bathlameet5@gmail.com'}</p>
+        <p className="profile-phone-main">{profileData.phone || '8168707143'}</p>
+        <p className="profile-agent-id-main">ID: {agentCode || 'CK2026109'}</p>
       </div>
 
       {/* ── KYC Banner ── */}
@@ -176,12 +227,41 @@ const Profile = () => {
         </div>
       )}
 
-      {/* ── Agent Stats Card ── */}
-      <div className="agent-stats-card">
-        <div className="stat-group">
-          <span className="stat-label">Agent ID</span>
-          <span className="stat-value">{agentCode || 'CK2026109'}</span>
-        </div>
+      {/* ── Relationship Manager Card ── */}
+      <div className="rm-card animate-fade-in">
+        <h3 className="rm-title">Your Relationship Manager</h3>
+        {rm ? (
+          <div className="rm-details">
+            <div className="rm-profile-info">
+              {rm.profile_url ? (
+                <img src={rm.profile_url} alt={rm.name} className="rm-avatar" />
+              ) : (
+                <div className="rm-avatar-placeholder">{rm.name.charAt(0)}</div>
+              )}
+              <div className="rm-text-group">
+                <h4>{rm.name}</h4>
+                <p>Finxpert Relationship Manager</p>
+              </div>
+            </div>
+            <div className="rm-actions">
+              {rm.whatsapp && (
+                <a href={`https://wa.me/${rm.whatsapp}`} target="_blank" rel="noreferrer" className="btn-rm-action whatsapp">
+                  <MessageSquare size={18} /> WhatsApp
+                </a>
+              )}
+              {rm.phone && (
+                <a href={`tel:${rm.phone}`} className="btn-rm-action call">
+                  <Phone size={18} /> Call
+                </a>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="rm-empty">
+            <UserCheck size={32} style={{ color: '#94a3b8', marginBottom: '8px' }} />
+            <p>An RM will be assigned to you soon.</p>
+          </div>
+        )}
       </div>
 
       {/* ── Quick Links ── */}

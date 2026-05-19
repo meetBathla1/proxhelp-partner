@@ -8,7 +8,7 @@ const Welcome = () => {
   return (
     <div className="welcome-page-container animate-fade-in">
       <div className="welcome-header">
-        <img src="/logo.png" alt="FinXpert Logo" className="welcome-logo" />
+        <img src="/finexprt-logo.png" alt="FinExprt Logo" className="welcome-logo" />
       </div>
 
       <div className="welcome-illustration-container">

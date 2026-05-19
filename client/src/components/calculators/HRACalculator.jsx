@@ -51,7 +51,7 @@ const HRACalculator = () => {
                 className="feLumpLux__input"
                 type="number"
                 value={basic}
-                onChange={(e) => setBasic(Number(e.target.value))}
+                onChange={(e) => setBasic(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </div>
           </label>
@@ -64,7 +64,7 @@ const HRACalculator = () => {
                 className="feLumpLux__input"
                 type="number"
                 value={hra}
-                onChange={(e) => setHra(Number(e.target.value))}
+                onChange={(e) => setHra(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </div>
           </label>
@@ -77,7 +77,7 @@ const HRACalculator = () => {
                 className="feLumpLux__input"
                 type="number"
                 value={rent}
-                onChange={(e) => setRent(Number(e.target.value))}
+                onChange={(e) => setRent(e.target.value === '' ? '' : Number(e.target.value))}
               />
             </div>
           </label>

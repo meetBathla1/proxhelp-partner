@@ -10,7 +10,7 @@ const GetStarted = () => {
     <div className="get-started-container animate-fade-in">
       <div className="splash-content">
         <div className="logo-section">
-          <img src="/logo.png" alt="Finxpert Logo" className="splash-logo" />
+          <img src="/finexprt-logo.png" alt="FinExprt Logo" className="splash-logo" />
         </div>
         <div className="splash-illustration-wrapper">
           <img src="/splash-illustration.png" alt="Welcome Illustration" className="splash-illustration" />

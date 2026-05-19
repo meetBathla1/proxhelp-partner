@@ -28,7 +28,6 @@
 .splash-logo {
   max-width: 160px;
   height: auto;
-  mix-blend-mode: darken;
 }
 
 .splash-illustration-wrapper {
@@ -124,4 +123,8 @@
   .login-footer-text {
     color: var(--text-muted);
   }
+}
+
+color: var(--text-muted);
+}
 }

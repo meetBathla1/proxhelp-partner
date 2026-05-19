@@ -19,7 +19,7 @@ const PrivacyPolicy = () => {
             {/* Hero Section */}
             <div className="privacy-hero">
                 <div className="hero-icon-box">
-                    <img src="/logo.png" alt="Fin Exprt Logo" className="policy-logo" />
+                    <img src="/finexprt-logo.png" alt="FinExprt Logo" className="policy-logo" />
                 </div>
                 <p className="hero-subtitle">Your privacy is our commitment.</p>
                 

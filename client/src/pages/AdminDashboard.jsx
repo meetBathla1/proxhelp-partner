@@ -19,7 +19,8 @@ import {
   Eye,
   HelpCircle,
   MessageSquare,
-  Landmark
+  Landmark,
+  UserCheck
 } from 'lucide-react';
 import './AdminDashboard.css';
 
@@ -36,11 +37,34 @@ const AdminDashboard = () => {
   const [kycs, setKycs] = useState([]);
   const [bankAccounts, setBankAccounts] = useState([]);
   const [supportTickets, setSupportTickets] = useState([]);
+  const [rms, setRms] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(''); // 'banner', 'product', 'kyc_details'
   const [formData, setFormData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [agentLeadsModal, setAgentLeadsModal] = useState(null);
+
+  const handleViewAgentLeads = async (partner_id, partner_name) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`http://localhost:5000/api/admin/partner/${partner_id}/leads`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await res.json();
+      setAgentLeadsModal({
+        partner_id,
+        partner_name,
+        myLeads: data.myLeads || [],
+        referralLeads: data.referralLeads || [],
+        activeTab: 'my'
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -97,6 +121,13 @@ const AdminDashboard = () => {
         const bankRes = await fetch('http://localhost:5000/api/admin/bank-accounts', { headers });
         setBankAccounts(await bankRes.json());
       }
+
+      if (activeTab === 'relationship_managers' || activeTab === 'partners') {
+        const rmRes = await fetch('http://localhost:5000/api/admin/rms', { headers });
+        if (rmRes.ok) {
+          setRms(await rmRes.json());
+        }
+      }
     } catch (err) {
       console.error('Fetch error:', err);
     } finally {
@@ -121,6 +152,46 @@ const AdminDashboard = () => {
       }
     } catch (err) {
       console.error('Save error:', err);
+    }
+  };
+
+  const handleSaveRM = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:5000/api/admin/rms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        setShowModal(false);
+        fetchData();
+      }
+    } catch (err) {
+      console.error('Save RM error:', err);
+    }
+  };
+
+  const handleAssignRM = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`http://localhost:5000/api/admin/partners/${formData.partner_id}/assign-rm`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ rm_id: formData.rm_id })
+      });
+      if (res.ok) {
+        setShowModal(false);
+        fetchData();
+      }
+    } catch (err) {
+      console.error('Assign RM error:', err);
     }
   };
 
@@ -248,6 +319,9 @@ const AdminDashboard = () => {
         </button>
         <button className={activeTab === 'kyc' ? 'active' : ''} onClick={() => setActiveTab('kyc')}>
           <FileCheck size={20} /> KYC Approvals
+        </button>
+        <button className={activeTab === 'relationship_managers' ? 'active' : ''} onClick={() => setActiveTab('relationship_managers')}>
+          <UserCheck size={20} /> RM Setup
         </button>
         <button className={activeTab === 'bank_verification' ? 'active' : ''} onClick={() => setActiveTab('bank_verification')}>
           <Landmark size={20} /> Bank Verification
@@ -423,6 +497,53 @@ const AdminDashboard = () => {
     </div>
   );
 
+  const renderRelationshipManagers = () => (
+    <div className="admin-content-section animate-fade-in">
+      <div className="section-header-admin">
+        <h1 className="admin-page-title">Relationship Managers</h1>
+        <button className="btn-add-admin" onClick={() => { setModalType('rm'); setFormData({}); setShowModal(true); }}>
+          <Plus size={20} /> Add New RM
+        </button>
+      </div>
+
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Profile</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>WhatsApp</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rms.map(rm => (
+              <tr key={rm.id}>
+                <td>
+                  {rm.profile_url ? (
+                    <img src={rm.profile_url} alt={rm.name} className="mini-logo" style={{ borderRadius: '50%' }} />
+                  ) : (
+                    <div className="item-avatar small">{rm.name.charAt(0)}</div>
+                  )}
+                </td>
+                <td><strong>{rm.name}</strong></td>
+                <td>{rm.phone}</td>
+                <td>{rm.whatsapp}</td>
+                <td>
+                  <div className="action-btns">
+                    <button className="btn-icon-admin edit" onClick={() => { setModalType('rm'); setFormData(rm); setShowModal(true); }}><Edit3 size={18} /></button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {rms.length === 0 && <div className="empty-state-admin">No Relationship Managers found.</div>}
+      </div>
+    </div>
+  );
+
   const renderPartners = () => (
     <div className="admin-content-section animate-fade-in">
       <div className="section-header-admin">
@@ -459,6 +580,8 @@ const AdminDashboard = () => {
                 <td>{new Date(p.created_at).toLocaleDateString()}</td>
                 <td>
                   <div className="action-btns">
+                    <button className="btn-icon-admin info" title="View Leads" onClick={() => handleViewAgentLeads(p.id, p.name)}><TrendingUp size={18} /></button>
+                    <button className="btn-icon-admin success" title="Assign RM" onClick={() => { setModalType('assign_rm'); setFormData({ partner_id: p.id, rm_id: p.rm_id || '' }); setShowModal(true); }}><UserCheck size={18} /></button>
                     <button className="btn-icon-admin edit" title="Edit Partner"><Edit3 size={18} /></button>
                     <button className="btn-icon-admin delete" title="Delete Partner"><Trash2 size={18} /></button>
                   </div>
@@ -742,6 +865,7 @@ const AdminDashboard = () => {
         {activeTab === 'bank_verification' && renderBankAccounts()}
         {activeTab === 'support' && renderSupport()}
         {activeTab === 'wallet' && renderWallet()}
+        {activeTab === 'relationship_managers' && renderRelationshipManagers()}
         {activeTab === 'settings' && <div className="admin-content-section"><h1>Settings Coming Soon</h1></div>}
       </main>
 
@@ -752,12 +876,14 @@ const AdminDashboard = () => {
               <h3>
                 {modalType === 'banner' ? (formData.id ? 'Edit Banner' : 'New Banner') :
                   modalType === 'kyc_details' ? 'Review KYC Details' :
+                  modalType === 'rm' ? (formData.id ? 'Edit RM' : 'New RM') :
+                  modalType === 'assign_rm' ? 'Assign RM to Partner' :
                     (formData.id ? 'Edit Product' : 'New Product')}
               </h3>
               <button className="btn-close-modal" onClick={() => setShowModal(false)}><X size={24} /></button>
             </div>
 
-            <form className="admin-form" onSubmit={modalType === 'product' ? handleSaveProduct : modalType === 'banner' ? handleSaveBanner : (e) => e.preventDefault()}>
+            <form className="admin-form" onSubmit={modalType === 'product' ? handleSaveProduct : modalType === 'banner' ? handleSaveBanner : modalType === 'rm' ? handleSaveRM : modalType === 'assign_rm' ? handleAssignRM : (e) => e.preventDefault()}>
               <div className="form-scroll-area">
                 {modalType === 'kyc_details' ? (
                   <div className="kyc-review-wrap">
@@ -959,6 +1085,37 @@ const AdminDashboard = () => {
                       </div>
                     </div>
                   </div>
+                ) : modalType === 'rm' ? (
+                  <div className="form-grid">
+                    <div className="form-group">
+                      <label>RM Name</label>
+                      <input type="text" value={formData.name || ''} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
+                    </div>
+                    <div className="form-group">
+                      <label>Phone</label>
+                      <input type="text" value={formData.phone || ''} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+                    </div>
+                    <div className="form-group">
+                      <label>WhatsApp Number</label>
+                      <input type="text" value={formData.whatsapp || ''} onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })} />
+                    </div>
+                    <div className="form-group full-width">
+                      <label>Profile Image URL</label>
+                      <input type="text" value={formData.profile_url || ''} onChange={(e) => setFormData({ ...formData, profile_url: e.target.value })} placeholder="/uploads/..." />
+                    </div>
+                  </div>
+                ) : modalType === 'assign_rm' ? (
+                  <div className="form-grid">
+                    <div className="form-group full-width">
+                      <label>Select Relationship Manager</label>
+                      <select value={formData.rm_id || ''} onChange={(e) => setFormData({ ...formData, rm_id: e.target.value })} required>
+                        <option value="">-- Select RM --</option>
+                        {rms.map(rm => (
+                          <option key={rm.id} value={rm.id}>{rm.name} ({rm.phone})</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                 ) : (
                   <div className="form-grid">
                     {/* Banner Form Fields */}
@@ -1020,12 +1177,73 @@ const AdminDashboard = () => {
                   <>
                     <button type="button" className="btn-secondary-admin" onClick={() => setShowModal(false)}>Cancel</button>
                     <button type="submit" className="btn-primary-admin">
-                      <Save size={18} /> {formData.id ? 'Update' : 'Save'} {modalType === 'banner' ? 'Banner' : 'Product'}
+                      <Save size={18} /> {formData.id ? 'Update' : 'Save'} {modalType === 'banner' ? 'Banner' : modalType === 'product' ? 'Product' : modalType === 'rm' ? 'RM' : 'Assignment'}
                     </button>
                   </>
                 )}
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Agent Leads Modal */}
+      {agentLeadsModal && (
+        <div className="admin-modal-overlay">
+          <div className="admin-modal" style={{ maxWidth: '800px', width: '90%' }}>
+            <div className="modal-header">
+              <h2>Leads for {agentLeadsModal.partner_name}</h2>
+              <button className="btn-close-modal" onClick={() => setAgentLeadsModal(null)}>
+                <X size={24} />
+              </button>
+            </div>
+            <div className="modal-body" style={{ padding: '20px' }}>
+              <div className="leads-type-toggle" style={{ marginBottom: '20px' }}>
+                <button 
+                  className={`type-toggle-btn ${agentLeadsModal.activeTab === 'my' ? 'active' : ''}`}
+                  onClick={() => setAgentLeadsModal({...agentLeadsModal, activeTab: 'my'})}
+                >
+                  Direct Leads ({agentLeadsModal.myLeads.length})
+                </button>
+                <button 
+                  className={`type-toggle-btn ${agentLeadsModal.activeTab === 'team' ? 'active' : ''}`}
+                  onClick={() => setAgentLeadsModal({...agentLeadsModal, activeTab: 'team'})}
+                >
+                  Referral Leads ({agentLeadsModal.referralLeads.length})
+                </button>
+              </div>
+
+              <div className="admin-table-wrapper" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Customer Name</th>
+                      <th>Service</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(agentLeadsModal.activeTab === 'my' ? agentLeadsModal.myLeads : agentLeadsModal.referralLeads).map(lead => (
+                      <tr key={lead.id}>
+                        <td>
+                          <strong>{lead.customer_name}</strong>
+                          {agentLeadsModal.activeTab === 'team' && lead.agent_name && (
+                            <div style={{ fontSize: '11px', color: 'var(--primary)' }}>Referred by: {lead.agent_name}</div>
+                          )}
+                        </td>
+                        <td>{lead.service_type}</td>
+                        <td><span className={`status-pill ${lead.status}`}>{lead.status}</span></td>
+                        <td>{new Date(lead.created_at).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {(agentLeadsModal.activeTab === 'my' ? agentLeadsModal.myLeads : agentLeadsModal.referralLeads).length === 0 && (
+                  <div className="empty-state-admin">No leads found in this category.</div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}

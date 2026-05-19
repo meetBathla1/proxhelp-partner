@@ -140,7 +140,7 @@ const ApplyProduct = () => {
       {/* Header */}
       <header className="apply-header">
         <div className="header-logo-group">
-          <img src="/logo.png" alt="Finxpert Logo" className="apply-brand-logo" />
+          <img src="/finexprt-logo.png" alt="FinExprt Logo" className="apply-brand-logo" />
           {partner && <span className="apply-partner-name">{partner.name}</span>}
         </div>
       </header>

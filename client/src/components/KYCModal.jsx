@@ -99,7 +99,7 @@ const KYCModal = ({ onClose, onSuccess }) => {
   return createPortal(
     <div className="kyc-modal-overlay">
       <div className="kyc-modal animate-slide-up">
-        
+
         {/* Header */}
         <div className="kyc-modal-header">
           <button className="kyc-back-btn" onClick={onClose}>
@@ -113,7 +113,7 @@ const KYCModal = ({ onClose, onSuccess }) => {
 
         {/* Content */}
         <div className="kyc-modal-content">
-          
+
           <div className="kyc-info-banner">
             <Info size={20} className="info-icon" />
             <span>Complete KYC verification to unlock all features</span>
@@ -122,17 +122,17 @@ const KYCModal = ({ onClose, onSuccess }) => {
           {error && <div className="kyc-error-banner">{error}</div>}
 
           <form onSubmit={handleSubmit}>
-            
+
             {/* Profile Photo */}
             <div className="kyc-form-group">
               <label>Profile Photo *</label>
               <div className="profile-upload-container">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  id="profile_photo" 
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="profile_photo"
                   onChange={(e) => handleFileChange(e, 'profile_photo')}
-                  hidden 
+                  hidden
                 />
                 <label htmlFor="profile_photo" className="profile-upload-circle">
                   {previews.profile_photo ? (
@@ -153,13 +153,13 @@ const KYCModal = ({ onClose, onSuccess }) => {
               <label>Full Name *</label>
               <div className="kyc-input-wrap">
                 <span className="kyc-field-icon">👤</span>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   name="fullName"
-                  placeholder="Enter full name as per Aadhar" 
+                  placeholder="Enter full name as per Aadhar"
                   value={formData.fullName}
                   onChange={handleInputChange}
-                  required 
+                  required
                 />
               </div>
             </div>
@@ -169,14 +169,14 @@ const KYCModal = ({ onClose, onSuccess }) => {
               <label>Aadhar Card *</label>
               <div className="kyc-input-wrap">
                 <span className="kyc-field-icon">💳</span>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   name="aadharNumber"
                   placeholder="Enter 12-digit Aadhaar number"
                   maxLength="12"
                   value={formData.aadharNumber}
                   onChange={handleInputChange}
-                  required 
+                  required
                 />
               </div>
 
@@ -220,15 +220,15 @@ const KYCModal = ({ onClose, onSuccess }) => {
               <label>PAN Card *</label>
               <div className="kyc-input-wrap">
                 <span className="kyc-field-icon">🪪</span>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   name="panNumber"
                   placeholder="Enter 10-character PAN"
                   maxLength="10"
                   value={formData.panNumber}
                   onChange={handleInputChange}
                   style={{ textTransform: 'uppercase' }}
-                  required 
+                  required
                 />
               </div>
 

@@ -71,7 +71,7 @@ const IncomeTaxCalculator = () => {
                 max={100000000}
                 step={50000}
                 value={income}
-                onChange={(e) => setIncome(Number(e.target.value))}
+                onChange={(e) => setIncome(e.target.value === '' ? '' : Number(e.target.value))}
                 onBlur={() => setIncome(Math.max(0, income))}
               />
             </div>

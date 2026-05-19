@@ -1,40 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FileText, Clock, CheckCircle2, XCircle,
-  ChevronRight, TrendingUp, AlertCircle, Search
+  ChevronRight, TrendingUp, AlertCircle, Search, Users
 } from 'lucide-react';
+import axios from 'axios';
 import './Leads.css';
-
-const DEMO_LEADS = [
-  { id: 1, name: 'Rahul Sharma', service: 'Credit Card', bank: 'HDFC Bank', status: 'approved', date: '2024-05-10', amount: '₹2,300' },
-  { id: 2, name: 'Priya Verma', service: 'Personal Loan', bank: 'IndusInd Bank', status: 'pending', date: '2024-05-12', amount: '₹2.60%' },
-  { id: 3, name: 'Amit Kumar', service: 'Savings Account', bank: 'AU Bank', status: 'pending', date: '2024-05-13', amount: '₹800' },
-  { id: 4, name: 'Sneha Patel', service: 'Demat Account', bank: 'Upstox', status: 'rejected', date: '2024-05-14', amount: '₹400' },
-  { id: 5, name: 'Vikram Singh', service: 'Instant Loan', bank: 'KreditBee', status: 'approved', date: '2024-05-15', amount: '₹3.20%' },
-];
 
 const STATUS_CONFIG = {
   approved: { label: 'Approved', color: '#10b981', bg: '#ecfdf5', icon: <CheckCircle2 size={14} /> },
+  completed: { label: 'Approved', color: '#10b981', bg: '#ecfdf5', icon: <CheckCircle2 size={14} /> },
   pending:  { label: 'Pending',  color: '#ff8c00', bg: '#fff4e6', icon: <Clock size={14} /> },
   rejected: { label: 'Rejected', color: '#ef4444', bg: '#fef2f2', icon: <XCircle size={14} /> },
+  new:      { label: 'New',      color: '#3b82f6', bg: '#eff6ff', icon: <FileText size={14} /> },
+  'in-progress': { label: 'In Progress', color: '#8b5cf6', bg: '#f5f3ff', icon: <TrendingUp size={14} /> }
 };
 
 const Leads = () => {
   const [activeTab, setActiveTab] = useState('all');
+  const [leadType, setLeadType] = useState('my'); // 'my' or 'team'
   const [search, setSearch] = useState('');
-  const [leads] = useState(DEMO_LEADS);
+  
+  const [myLeads, setMyLeads] = useState([]);
+  const [teamLeads, setTeamLeads] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = leads.filter(l => {
-    const matchTab = activeTab === 'all' || l.status === activeTab;
-    const matchSearch = l.name.toLowerCase().includes(search.toLowerCase()) || 
-                        l.service.toLowerCase().includes(search.toLowerCase());
-    return matchTab && matchSearch;
+  useEffect(() => {
+    fetchLeads();
+  }, []);
+
+  const fetchLeads = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const res = await axios.get('http://localhost:5000/api/leads', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMyLeads(res.data.myLeads || []);
+      setTeamLeads(res.data.referralLeads || []);
+    } catch (err) {
+      console.error('Error fetching leads:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const currentLeads = leadType === 'my' ? myLeads : teamLeads;
+
+  const filtered = currentLeads.filter(l => {
+    const statusVal = (l.status || 'new').toLowerCase();
+    const matchTab = activeTab === 'all' || 
+                     (activeTab === 'pending' && (statusVal === 'pending' || statusVal === 'new' || statusVal === 'in-progress')) ||
+                     statusVal === activeTab;
+    
+    const nameMatch = l.customer_name ? l.customer_name.toLowerCase().includes(search.toLowerCase()) : false;
+    const serviceMatch = l.service_type ? l.service_type.toLowerCase().includes(search.toLowerCase()) : false;
+    
+    return matchTab && (nameMatch || serviceMatch);
   });
 
-  const total    = leads.length;
-  const pending  = leads.filter(l => l.status === 'pending').length;
-  const approved = leads.filter(l => l.status === 'approved').length;
-  const rejected = leads.filter(l => l.status === 'rejected').length;
+  const total    = currentLeads.length;
+  const pending  = currentLeads.filter(l => ['pending', 'new', 'in-progress'].includes((l.status || '').toLowerCase())).length;
+  const approved = currentLeads.filter(l => (l.status || '').toLowerCase() === 'approved').length;
+  const rejected = currentLeads.filter(l => (l.status || '').toLowerCase() === 'rejected').length;
 
   const tabs = [
     { key: 'all',      label: 'All',      count: total },
@@ -50,11 +77,29 @@ const Leads = () => {
       <div className="leads-hero">
         <div className="leads-hero-content">
           <p className="leads-hero-subtitle">Partner Dashboard</p>
-          <h1 className="leads-hero-title">My Applications</h1>
-          <p className="leads-hero-desc">Track & manage all your customer leads</p>
+          <h1 className="leads-hero-title">Applications</h1>
+          <p className="leads-hero-desc">Track & manage customer leads</p>
         </div>
         <div className="leads-hero-icon">
           <TrendingUp size={40} color="rgba(255,255,255,0.3)" />
+        </div>
+      </div>
+      
+      {/* ── Type Toggle (My Leads / Team Leads) ── */}
+      <div className="leads-type-toggle-container">
+        <div className="leads-type-toggle">
+          <button 
+            className={`type-toggle-btn ${leadType === 'my' ? 'active' : ''}`}
+            onClick={() => setLeadType('my')}
+          >
+            <FileText size={16} /> My Leads
+          </button>
+          <button 
+            className={`type-toggle-btn ${leadType === 'team' ? 'active' : ''}`}
+            onClick={() => setLeadType('team')}
+          >
+            <Users size={16} /> Team Leads
+          </button>
         </div>
       </div>
 
@@ -126,27 +171,40 @@ const Leads = () => {
 
         {/* ── Lead Cards ── */}
         <div className="leads-list">
-          {filtered.length === 0 ? (
+          {loading ? (
+             <div className="leads-empty-state">
+                <p>Loading leads...</p>
+             </div>
+          ) : filtered.length === 0 ? (
             <div className="leads-empty-state">
               <div className="leads-empty-icon">
                 <AlertCircle size={32} color="var(--secondary)" />
               </div>
               <h3>No applications found</h3>
-              <p>Applications you submit will appear here</p>
+              <p>{leadType === 'my' ? 'Applications you submit will appear here' : 'Applications submitted by your team will appear here'}</p>
             </div>
           ) : (
             filtered.map(lead => {
-              const status = STATUS_CONFIG[lead.status];
+              const statusVal = (lead.status || 'new').toLowerCase();
+              const status = STATUS_CONFIG[statusVal] || STATUS_CONFIG['new'];
+              const dateObj = new Date(lead.created_at);
+              const dateStr = isNaN(dateObj) ? '' : dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+              
               return (
                 <div key={lead.id} className="lead-card">
                   <div className="lead-card-left">
                     <div className="lead-avatar">
-                      {lead.name.charAt(0)}
+                      {lead.customer_name ? lead.customer_name.charAt(0) : '?'}
                     </div>
                     <div className="lead-info">
-                      <h4 className="lead-name">{lead.name}</h4>
-                      <p className="lead-service">{lead.service} · {lead.bank}</p>
-                      <p className="lead-date">{new Date(lead.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                      <h4 className="lead-name">{lead.customer_name}</h4>
+                      <p className="lead-service">{lead.service_type || 'Service'} {lead.bank ? `· ${lead.bank}` : ''}</p>
+                      {leadType === 'team' && lead.agent_name && (
+                         <p className="lead-agent-name" style={{ fontSize: '11px', color: 'var(--primary)', marginTop: '2px', fontWeight: '500' }}>
+                           Referred by: {lead.agent_name}
+                         </p>
+                      )}
+                      <p className="lead-date">{dateStr}</p>
                     </div>
                   </div>
                   <div className="lead-card-right">
@@ -156,7 +214,6 @@ const Leads = () => {
                     >
                       {status.icon} {status.label}
                     </span>
-                    <p className="lead-earn">Earn: <strong>{lead.amount}</strong></p>
                   </div>
                 </div>
               );

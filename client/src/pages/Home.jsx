@@ -124,7 +124,7 @@ const Home = () => {
         </div>
 
         <div className="quick-actions-grid">
-          {quickActions.slice(0, 8).map((action, index) => (
+          {quickActions.slice(0, 12).map((action, index) => (
             <div
               className="action-item"
               key={index}
@@ -238,28 +238,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* CTA Section */}
-      <div className="cta-banner-section">
-        <div className="cta-card">
-          <h3>Be a part of Proxhelp partner</h3>
-          <p>Join our network of successful financial partners today and start earning.</p>
-
-          <div className="cta-buttons-row">
-            <a href="https://wa.me/911234567890" className="cta-icon-btn whatsapp">
-              <div className="icon-wrap"><MessageCircle size={20} /></div>
-              <span>WhatsApp</span>
-            </a>
-            <a href="mailto:support@proxhelp.com" className="cta-icon-btn mail">
-              <div className="icon-wrap"><Mail size={20} /></div>
-              <span>Mail</span>
-            </a>
-            <a href="tel:+911234567890" className="cta-icon-btn call">
-              <div className="icon-wrap"><Phone size={20} /></div>
-              <span>Call</span>
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

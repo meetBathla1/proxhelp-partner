@@ -385,3 +385,44 @@
   color: var(--text-muted);
   line-height: 1.5;
 }
+
+/* ── Type Toggle ── */
+.leads-type-toggle-container {
+  padding: 0 16px;
+  margin-top: -16px; /* Pull up to overlap with hero */
+  position: relative;
+  z-index: 10;
+  margin-bottom: 16px;
+}
+
+.leads-type-toggle {
+  display: flex;
+  background: white;
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 4px 14px rgba(0,45,98,0.08);
+  border: 1px solid var(--border);
+}
+
+.type-toggle-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.type-toggle-btn.active {
+  background: var(--secondary-tint);
+  color: var(--secondary);
+  box-shadow: 0 2px 8px rgba(0,45,98,0.05);
+}
