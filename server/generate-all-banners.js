@@ -171,7 +171,7 @@ function generateSVG(product) {
   <circle cx="200" cy="480" r="2.5" fill="rgba(255,255,255,0.2)"/>
 
   <!-- Branding -->
-  <text x="30" y="38" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="800" fill="rgba(255,255,255,0.18)" letter-spacing="3">FINXPERT</text>
+  <text x="30" y="38" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="800" fill="rgba(255,255,255,0.18)" letter-spacing="3">FINEXPRT</text>
   <text x="770" y="36" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.3)" text-anchor="end" letter-spacing="1">Powered by ${escapeXml(product.bank)}</text>
 
   <!-- Badge -->
@@ -201,7 +201,7 @@ ${titleLines}
   <rect x="290" y="${ctaY}" width="180" height="44" rx="22" fill="url(#accent)"/>
   <text x="380" y="${ctaY + 28}" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="800" fill="white" text-anchor="middle">Apply Now →</text>
 
-  <text x="500" y="${ctaY + 28}" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.35)">via Finxpert Partner</text>
+  <text x="500" y="${ctaY + 28}" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.35)">via Finexprt Partner</text>
 
   <!-- Bottom bar -->
   <rect x="0" y="595" width="800" height="5" fill="url(#bar)"/>

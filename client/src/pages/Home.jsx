@@ -15,7 +15,8 @@ import {
   Star,
   MessageCircle,
   Mail,
-  Phone
+  Phone,
+  Landmark
 } from 'lucide-react';
 import './Home.css';
 
@@ -24,6 +25,7 @@ const Home = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [banners, setBanners] = useState([]);
   const [quickActions, setQuickActions] = useState([]);
+  const [offlinePartners, setOfflinePartners] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Map icon names to Lucide components
@@ -37,22 +39,26 @@ const Home = () => {
     Users: <Users size={24} color="#7c3aed" />,
     PiggyBank: <PiggyBank size={24} color="#e11d48" />,
     TrendingUp: <TrendingUp size={24} color="#2563eb" />,
-    ShieldCheck: <ShieldCheck size={24} color="#16a34a" />
+    ShieldCheck: <ShieldCheck size={24} color="#16a34a" />,
+    Landmark: <Landmark size={24} color="#7c3aed" />
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [bannerRes, serviceRes] = await Promise.all([
+        const [bannerRes, serviceRes, offlineRes] = await Promise.all([
           fetch('http://localhost:5000/api/banners'),
-          fetch('http://localhost:5000/api/services')
+          fetch('http://localhost:5000/api/services'),
+          fetch('http://localhost:5000/api/offline-partners')
         ]);
 
         const bannerData = await bannerRes.json();
         const serviceData = await serviceRes.json();
+        const offlineData = await offlineRes.json();
 
         setBanners(bannerData);
         setQuickActions(serviceData);
+        setOfflinePartners(offlineData);
         setIsLoading(false);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -149,7 +155,7 @@ const Home = () => {
               <p className="section-subtitle">High commission products</p>
             </div>
           </div>
-          <button className="btn-view-all">
+          <button className="btn-view-all" onClick={() => navigate('/services')}>
             View All <ChevronRight size={16} />
           </button>
         </div>
@@ -197,6 +203,46 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Offline Banking Partners - Right Swipe */}
+      {offlinePartners.length > 0 && (
+        <div className="section-container offline-partners-section">
+          <div className="section-header-row">
+            <div className="section-title-wrapper">
+              <div className="title-accent-bar purple"></div>
+              <div>
+                <h3 className="section-title">Offline Banking Partners</h3>
+                <p className="section-subtitle">Direct offline application support</p>
+              </div>
+            </div>
+            <button className="btn-view-all" onClick={() => navigate('/offline-partners')}>
+              View All <ChevronRight size={16} />
+            </button>
+          </div>
+
+          <div className="featured-cards-horizontal-scroll">
+            {offlinePartners.map((partner) => (
+              <div className="featured-card horizontal offline-card-home" key={partner.id}>
+                <div className="featured-card-header">
+                  <div className="product-logo-box">
+                    <img src={partner.logo_url} alt={partner.bank_name} className="bank-logo-img" />
+                  </div>
+                  <div className="status-badge active-status" style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderRadius: '50px', background: '#ecfdf5', color: '#059669', border: '1px solid #a7f3d0', fontWeight: 'bold' }}>
+                    Active
+                  </div>
+                </div>
+                <div className="featured-card-body">
+                  <h4>{partner.bank_name}</h4>
+                  <p>Upload documents & get dedicated RM support offline.</p>
+                </div>
+                <div className="featured-card-footer">
+                  <button className="btn-details" onClick={() => navigate('/offline-partners')}>Apply Now</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Testimonials */}
       <div className="section-container testimonials-section">
         <div className="section-header-row">
@@ -220,7 +266,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            <p className="testimonial-text">"Finxpert has completely changed how I manage my clients' financial needs. The payouts are fast and the platform is so easy to use!"</p>
+            <p className="testimonial-text">"Finexprt has completely changed how I manage my clients' financial needs. The payouts are fast and the platform is so easy to use!"</p>
           </div>
 
           <div className="testimonial-card horizontal">

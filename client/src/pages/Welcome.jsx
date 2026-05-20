@@ -16,7 +16,7 @@ const Welcome = () => {
       </div>
 
       <div className="welcome-text-content">
-        <h1>Welcome to FinXpert Partner</h1>
+        <h1>Welcome to Finexprt Partner</h1>
         <p>
           Your all-in-one financial partner. Manage loans, insurance, 
           investments and more in one place.

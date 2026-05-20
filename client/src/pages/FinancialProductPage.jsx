@@ -126,7 +126,7 @@ const FinancialProductPage = ({ serviceName, title, ribbonClass = "" }) => {
             <div className="cc-button-group">
               <button 
                 className="btn-details-purple"
-                onClick={() => setSelectedProduct(product)}
+                onClick={() => navigate(`/share-product/${product.id}`)}
               >
                 <Info size={16} />
                 <span>Details</span>
@@ -175,6 +175,11 @@ const FinancialProductPage = ({ serviceName, title, ribbonClass = "" }) => {
               <button className="btn-close-modal" onClick={() => setSelectedProduct(null)}>✕</button>
             </div>
             <div className="modal-body">
+              {selectedProduct.share_image_url && (
+                <div className="modal-banner-container">
+                  <img src={selectedProduct.share_image_url} alt="Product Promo Banner" className="modal-promo-banner" />
+                </div>
+              )}
               <div className="modal-brand-info">
                 <img src={selectedProduct.logo_url} alt={selectedProduct.bank_name} className="modal-bank-logo" />
                 <div className="modal-brand-text">

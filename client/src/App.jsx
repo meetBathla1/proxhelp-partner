@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import MainLayout from './layouts/MainLayout';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
 import GetStarted from './pages/GetStarted';
 import Home from './pages/Home';
 import Leads from './pages/Leads';
@@ -20,7 +21,9 @@ import Notifications from './pages/Notifications';
 import FinancialProductPage from './pages/FinancialProductPage';
 import ShareProduct from './pages/ShareProduct';
 import ApplyProduct from './pages/ApplyProduct';
+import MultiStepApply from './pages/MultiStepApply';
 import AdminDashboard from './pages/AdminDashboard';
+import OfflinePartners from './pages/OfflinePartners';
 import ScrollToTop from './components/ScrollToTop';
 import { NotificationProvider } from './context/NotificationContext';
 import './App.css';
@@ -35,10 +38,12 @@ function App() {
             <Route path="/" element={<GetStarted />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/admin" element={<AdminDashboard />} />
 
             {/* Public Apply Route */}
             <Route path="/apply/:productId" element={<ApplyProduct />} />
+            <Route path="/apply-offline/:partnerId" element={<MultiStepApply />} />
 
             {/* Protected Routes inside MainLayout */}
             <Route element={<MainLayout />}>
@@ -65,6 +70,7 @@ function App() {
               <Route path="/savings-account" element={<FinancialProductPage serviceName="Savings Account" title="Savings Accounts" ribbonClass="pink-ribbon" />} />
                <Route path="/demat-account" element={<FinancialProductPage serviceName="Demat Account" title="Demat Accounts" ribbonClass="blue-ribbon" />} />
               <Route path="/insurance" element={<FinancialProductPage serviceName="Insurance" title="Insurance" ribbonClass="green-ribbon" />} />
+              <Route path="/offline-partners" element={<OfflinePartners />} />
               <Route path="/share-product/:productId" element={<ShareProduct />} />
             </Route>
 

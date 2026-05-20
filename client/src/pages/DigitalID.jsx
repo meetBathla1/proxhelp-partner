@@ -68,12 +68,12 @@ const DigitalID = () => {
 
   const handleShare = async () => {
     if (!isApproved) return;
-    const shareLink = `https://finxpert.com/id/${agentCode}`;
+    const shareLink = `https://finexprt.com/id/${agentCode}`;
     try {
       if (navigator.share) {
         await navigator.share({
-          title: 'My Finxpert Digital ID',
-          text: `Hi! I'm ${user.name}, a Financial Partner with Finxpert. Connect with me using my Digital ID!`,
+          title: 'My Finexprt Digital ID',
+          text: `Hi! I'm ${user.name}, a Financial Partner with Finexprt. Connect with me using my Digital ID!`,
           url: shareLink,
         });
       } else {
@@ -90,7 +90,7 @@ const DigitalID = () => {
   };
 
   const currentMonthYear = new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-  const qrData = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=finxpert:${agentCode}`;
+  const qrData = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=finexprt:${agentCode}`;
 
   return (
     <div className="digital-id-page animate-fade-in">
@@ -111,7 +111,7 @@ const DigitalID = () => {
         <div className="digital-card" ref={cardRef}>
           <div className="card-top">
             <div className="card-brand">
-              <h3>Finxpert</h3>
+              <h3>Finexprt</h3>
               <p>Financial Partner</p>
             </div>
             <div className="card-avatar">

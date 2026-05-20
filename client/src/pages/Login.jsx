@@ -32,7 +32,7 @@ const Login = () => {
       <div className="login-content animate-fade-in">
         <div className="login-header">
           <img src="/finexprt-logo.png" alt="FinExprt Logo" className="login-logo" />
-          <h1 className="login-title">Finxpert<br/>Partner</h1>
+          <h1 className="login-title">Finexprt<br/>Partner</h1>
           <p className="login-subtitle">Welcome back! Please<br/>enter your details.</p>
         </div>
         
@@ -68,7 +68,7 @@ const Login = () => {
               <span className="checkmark"></span>
               Remember me
             </label>
-            <a href="#" className="forgot-password">Forgot password?</a>
+            <span className="forgot-password" onClick={() => navigate('/forgot-password')}>Forgot password?</span>
           </div>
           
           <button type="submit" className="btn-signin w-full" disabled={loading}>

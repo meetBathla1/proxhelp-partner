@@ -16,7 +16,7 @@ const GetStarted = () => {
           <img src="/splash-illustration.png" alt="Welcome Illustration" className="splash-illustration" />
         </div>
         <div className="splash-text">
-          <h1>Welcome to FINxPERT Partner</h1>
+          <h1>Welcome to Finexprt Partner</h1>
           <p>Join the fastest growing network of financial experts.</p>
         </div>
       </div>

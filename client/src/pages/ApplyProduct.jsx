@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { Check, Info, ShieldCheck, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, CheckCircle2 } from 'lucide-react';
 import './ApplyProduct.css';
 
 const ApplyProduct = () => {
@@ -22,7 +22,9 @@ const ApplyProduct = () => {
   const [otpStep, setOtpStep] = useState(false);
   const [otp, setOtp] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [globalError, setGlobalError] = useState('');
+  const [otpMessage, setOtpMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -54,46 +56,55 @@ const ApplyProduct = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    // Clear error for this field
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleSendOtp = (e) => {
     e.preventDefault();
+    const errors = {};
+    
     if (!formData.mobile || formData.mobile.length < 10) {
-      setError('Please enter a valid 10-digit mobile number.');
-      return;
+      errors.mobile = 'FIELD REQUIRED: Please enter a valid 10-digit mobile number.';
     }
     if (!formData.fullName) {
-      setError('Please enter your full name.');
-      return;
+      errors.fullName = 'FIELD REQUIRED: Please enter your full name.';
     }
-    if (!formData.pincode) {
-      setError('Please enter your pincode.');
-      return;
+    if (!formData.pincode || formData.pincode.length < 6) {
+      errors.pincode = 'FIELD REQUIRED: Please enter a valid 6-digit pincode.';
     }
     if (!formData.agreed) {
-      setError('You must accept the terms & conditions.');
+      errors.agreed = 'FIELD REQUIRED: You must accept the terms & conditions.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
 
-    setError('');
+    setFieldErrors({});
+    setGlobalError('');
     setIsSubmitting(true);
+    
     // Simulate OTP sending
     setTimeout(() => {
       setIsSubmitting(false);
       setOtpStep(true);
-      // Mock OTP notification
-      alert('Mock OTP sent! Any 4-digit code will work.');
+      setOtpMessage('OTP sent! Use any 4-digit code (e.g. 1234) to verify.');
     }, 1000);
   };
 
   const handleVerifyAndSubmit = async (e) => {
     e.preventDefault();
     if (otp.length < 4) {
-      setError('Please enter the OTP.');
+      setFieldErrors({ otp: 'FIELD REQUIRED: Please enter the 4-digit OTP.' });
       return;
     }
 
-    setError('');
+    setFieldErrors({});
+    setGlobalError('');
     setIsSubmitting(true);
 
     try {
@@ -110,19 +121,19 @@ const ApplyProduct = () => {
       });
 
       if (res.ok) {
-        // Redirect to official bank URL
         if (product.redirect_url) {
           window.location.href = product.redirect_url;
         } else {
-          alert('Lead captured successfully, but no redirect URL is configured for this product.');
+          setGlobalError('Application submitted successfully! However, redirect URL is not configured.');
+          setIsSubmitting(false);
         }
       } else {
         const data = await res.json();
-        setError(data.message || 'Failed to submit application.');
+        setGlobalError(data.message || 'Failed to submit application.');
         setIsSubmitting(false);
       }
     } catch (err) {
-      setError('Server error. Please try again.');
+      setGlobalError('Server error. Please try again.');
       setIsSubmitting(false);
     }
   };
@@ -152,7 +163,7 @@ const ApplyProduct = () => {
         ) : (
           <div className="apply-banner-placeholder">
             <h3>{product.name}</h3>
-            <p>Select a Card. Hand - pick yours perks!</p>
+            <p>Select a Card. Hand - pick your perks!</p>
           </div>
         )}
       </div>
@@ -178,7 +189,7 @@ const ApplyProduct = () => {
       <div className="apply-content">
         {activeTab === 'apply' ? (
           <div className="apply-form-section animate-fade-in">
-            {error && <div className="apply-error-msg">{error}</div>}
+            {globalError && <div className="apply-error-msg">{globalError}</div>}
 
             {!otpStep ? (
               <form onSubmit={handleSendOtp} className="apply-form">
@@ -190,8 +201,9 @@ const ApplyProduct = () => {
                     value={formData.mobile}
                     onChange={handleInputChange}
                     maxLength="10"
-                    className="apply-input"
+                    className={`apply-input ${fieldErrors.mobile ? 'input-error' : ''}`}
                   />
+                  {fieldErrors.mobile && <span className="field-error-text">{fieldErrors.mobile}</span>}
                 </div>
 
                 <div className="form-group">
@@ -201,8 +213,9 @@ const ApplyProduct = () => {
                     placeholder="Full Name"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="apply-input"
+                    className={`apply-input ${fieldErrors.fullName ? 'input-error' : ''}`}
                   />
+                  {fieldErrors.fullName && <span className="field-error-text">{fieldErrors.fullName}</span>}
                 </div>
 
                 <div className="form-group select-wrapper">
@@ -213,21 +226,25 @@ const ApplyProduct = () => {
                     value={formData.pincode}
                     onChange={handleInputChange}
                     maxLength="6"
-                    className="apply-input"
+                    className={`apply-input ${fieldErrors.pincode ? 'input-error' : ''}`}
                   />
+                  {fieldErrors.pincode && <span className="field-error-text">{fieldErrors.pincode}</span>}
                 </div>
 
                 <div className="terms-group">
-                  <input
-                    type="checkbox"
-                    id="termsAgreed"
-                    name="agreed"
-                    checked={formData.agreed}
-                    onChange={handleInputChange}
-                  />
-                  <label htmlFor="termsAgreed">
-                    I authorise Finxpert to securely store & use my data to call/SMS/whatsapp/email me about its products & have accepted the <a href="#">terms</a> of the <a href="#">privacy policy</a>.
-                  </label>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                    <input
+                      type="checkbox"
+                      id="termsAgreed"
+                      name="agreed"
+                      checked={formData.agreed}
+                      onChange={handleInputChange}
+                    />
+                    <label htmlFor="termsAgreed">
+                      I authorise Finexprt to securely store & use my data to call/SMS/whatsapp/email me about its products & have accepted the <a href="#">terms</a> of the <a href="#">privacy policy</a>.
+                    </label>
+                  </div>
+                  {fieldErrors.agreed && <span className="field-error-text" style={{ display: 'block', marginTop: '6px' }}>{fieldErrors.agreed}</span>}
                 </div>
 
                 <button type="submit" className="btn-apply-submit" disabled={isSubmitting}>
@@ -240,6 +257,7 @@ const ApplyProduct = () => {
                   <ShieldCheck size={40} color="#10b981" />
                   <h4>Verify your Mobile Number</h4>
                   <p>We've sent a 4-digit code to +91 {formData.mobile}</p>
+                  {otpMessage && <p className="otp-success-toast">{otpMessage}</p>}
                 </div>
 
                 <div className="form-group">
@@ -247,9 +265,13 @@ const ApplyProduct = () => {
                     type="text"
                     placeholder="Enter 4-digit OTP"
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                    className="apply-input otp-input"
+                    onChange={(e) => {
+                      setOtp(e.target.value.replace(/\D/g, '').slice(0, 4));
+                      if (fieldErrors.otp) setFieldErrors(prev => ({ ...prev, otp: '' }));
+                    }}
+                    className={`apply-input otp-input ${fieldErrors.otp ? 'input-error' : ''}`}
                   />
+                  {fieldErrors.otp && <span className="field-error-text">{fieldErrors.otp}</span>}
                 </div>
 
                 <button type="submit" className="btn-apply-submit" disabled={isSubmitting}>

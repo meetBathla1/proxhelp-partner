@@ -20,13 +20,13 @@
 
 .login-header {
   text-align: center;
-  margin-bottom: 20px; /* Decreased margin */
+  margin-bottom: 8px; /* Tighter spacing */
 }
 
 .login-logo {
-  height: 60px; /* Increased size significantly */
+  height: 180px; /* 3x original size */
   object-fit: contain;
-  margin: 0 auto 12px;
+  margin: -40px auto -30px;
   display: block;
   mix-blend-mode: multiply; /* Helps remove white background if present */
 }
@@ -88,14 +88,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
-  margin-top: -4px; /* Pull it slightly closer */
+  font-size: 13px;
+  margin-top: -2px;
+  gap: 12px;
 }
 
 .forgot-password {
-  color: var(--primary); /* Orange as per screenshot */
+  color: var(--primary);
   text-decoration: none;
   font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 13px;
+  flex-shrink: 0;
 }
 
 .forgot-password:hover {
@@ -147,6 +152,8 @@
   cursor: pointer;
   user-select: none;
   color: #1e293b;
+  white-space: nowrap;
+  font-size: 13px;
 }
 
 .checkbox-container input {

@@ -240,7 +240,7 @@ const Profile = () => {
               )}
               <div className="rm-text-group">
                 <h4>{rm.name}</h4>
-                <p>Finxpert Relationship Manager</p>
+                <p>Finexprt Relationship Manager</p>
               </div>
             </div>
             <div className="rm-actions">

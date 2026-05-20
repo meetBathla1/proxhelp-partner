@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 const db = require('./config/db');
- 
+
 // Initialize Database Tables
 const initDB = async () => {
     try {
@@ -24,7 +24,7 @@ const initDB = async () => {
             )
         `);
         console.log('Notifications table ensured');
-        
+
         await db.query(`
             CREATE TABLE IF NOT EXISTS support_tickets (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -320,10 +320,10 @@ app.post('/api/admin/payout/:id/status', authenticateToken, isAdmin, async (req,
         const [[tx]] = await db.query('SELECT partner_id, amount FROM wallet_transactions WHERE id = ?', [id]);
         if (tx) {
             const title = status === 'completed' ? 'Withdrawal Successful' : 'Withdrawal Rejected';
-            const message = status === 'completed' 
-                ? `Your withdrawal request for ₹${tx.amount} has been processed.` 
+            const message = status === 'completed'
+                ? `Your withdrawal request for ₹${tx.amount} has been processed.`
                 : `Your withdrawal request for ₹${tx.amount} was rejected. The amount has been returned to your wallet.`;
-            
+
             await db.query(
                 'INSERT INTO notifications (partner_id, type, title, message) VALUES (?, ?, ?, ?)',
                 [tx.partner_id, status === 'completed' ? 'success' : 'error', title, message]
@@ -471,10 +471,10 @@ app.post('/api/admin/bank-account/:id/status', authenticateToken, isAdmin, async
         const [[bank]] = await db.query('SELECT partner_id, bank_name FROM bank_accounts WHERE id = ?', [id]);
         if (bank) {
             const title = status === 'approved' ? 'Bank Account Verified' : 'Bank Account Rejected';
-            const message = status === 'approved' 
-                ? `Your ${bank.bank_name} account has been verified successfully.` 
+            const message = status === 'approved'
+                ? `Your ${bank.bank_name} account has been verified successfully.`
                 : `Your ${bank.bank_name} account verification failed. Please check details and resubmit.`;
-            
+
             await db.query(
                 'INSERT INTO notifications (partner_id, type, title, message) VALUES (?, ?, ?, ?)',
                 [bank.partner_id, status === 'approved' ? 'success' : 'error', title, message]
@@ -524,7 +524,7 @@ app.get('/api/notifications', authenticateToken, async (req, res) => {
 // Register Route
 app.post('/api/register', async (req, res) => {
     const { fullName, phone, email, password, referralCode } = req.body;
-    
+
     if (!fullName || !phone || !email || !password) {
         return res.status(400).json({ message: 'Please fill in all required fields.' });
     }
@@ -545,8 +545,8 @@ app.post('/api/register', async (req, res) => {
 
         const token = jwt.sign({ id: result.insertId, email, role: 'partner' }, JWT_SECRET, { expiresIn: '7d' });
 
-        res.status(201).json({ 
-            message: 'Account created successfully!', 
+        res.status(201).json({
+            message: 'Account created successfully!',
             token,
             user: { id: result.insertId, name: fullName, username: fullName, email, phone, role: 'partner', profile_url: null }
         });
@@ -574,6 +574,94 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// ── FORGOT PASSWORD ROUTES ──
+
+// Step 1: Verify email exists, return masked phone
+app.post('/api/forgot-password/verify-email', async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Email is required.' });
+
+    try {
+        const [rows] = await db.query('SELECT id, phone FROM partners WHERE email = ?', [email]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'No account found with this email address.' });
+        }
+        const phone = rows[0].phone || '';
+        // Mask phone: show only last 4 digits
+        const maskedPhone = phone.length >= 4 ? '••••••' + phone.slice(-4) : '••••';
+        res.json({ maskedPhone });
+    } catch (error) {
+        console.error('Verify email error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Step 2: Verify phone matches, issue reset token
+app.post('/api/forgot-password/verify-phone', async (req, res) => {
+    const { email, phone } = req.body;
+    if (!email || !phone) return res.status(400).json({ message: 'Email and phone are required.' });
+
+    try {
+        const [rows] = await db.query('SELECT id, phone FROM partners WHERE email = ?', [email]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'No account found with this email.' });
+        }
+
+        const user = rows[0];
+        // Normalize phone: strip spaces, dashes, country code prefix
+        const normalizePhone = (p) => p.replace(/[\s\-\+]/g, '').replace(/^91/, '');
+
+        if (normalizePhone(user.phone) !== normalizePhone(phone)) {
+            return res.status(400).json({ message: 'Phone number does not match our records.' });
+        }
+
+        // Issue a short-lived reset token (15 min)
+        const resetToken = jwt.sign(
+            { id: user.id, purpose: 'password-reset' },
+            JWT_SECRET,
+            { expiresIn: '15m' }
+        );
+
+        res.json({ resetToken });
+    } catch (error) {
+        console.error('Verify phone error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Step 3: Reset password using token
+app.post('/api/forgot-password/reset', async (req, res) => {
+    const { resetToken, newPassword } = req.body;
+    if (!resetToken || !newPassword) {
+        return res.status(400).json({ message: 'Token and new password are required.' });
+    }
+
+    if (newPassword.length < 6) {
+        return res.status(400).json({ message: 'Password must be at least 6 characters.' });
+    }
+
+    try {
+        // Verify reset token
+        const decoded = jwt.verify(resetToken, JWT_SECRET);
+        if (decoded.purpose !== 'password-reset') {
+            return res.status(400).json({ message: 'Invalid reset token.' });
+        }
+
+        // Hash and update password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        await db.query('UPDATE partners SET password = ? WHERE id = ?', [hashedPassword, decoded.id]);
+
+        res.json({ message: 'Password reset successfully!' });
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return res.status(400).json({ message: 'Reset link has expired. Please start over.' });
+        }
+        console.error('Reset password error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // Profile endpoints
 app.get('/api/profile', authenticateToken, async (req, res) => {
     try {
@@ -593,32 +681,32 @@ app.put('/api/profile/update', authenticateToken, upload.single('profile_photo')
         if (req.file) {
             profile_url = `/uploads/${req.file.filename}`;
         }
-        
+
         let query = 'UPDATE partners SET name=?, username=?, email=?, phone=?';
         let params = [name, username, email, phone];
-        
+
         if (profile_url) {
             query += ', profile_url=?';
             params.push(profile_url);
         }
-        
+
         query += ' WHERE id=?';
         params.push(partnerId);
-        
+
         await db.query(query, params);
-        
+
         // Fetch updated user
         const [rows] = await db.query('SELECT * FROM partners WHERE id = ?', [partnerId]);
         const user = rows[0];
-        
+
         res.json({
             message: 'Profile updated successfully',
-            user: { 
-                id: user.id, 
-                name: user.name, 
-                username: user.username || user.name, 
-                email: user.email, 
-                phone: user.phone, 
+            user: {
+                id: user.id,
+                name: user.name,
+                username: user.username || user.name,
+                email: user.email,
+                phone: user.phone,
                 role: user.role,
                 profile_url: user.profile_url
             }
@@ -675,6 +763,82 @@ app.get('/api/kyc/status', authenticateToken, async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+// ── OFFLINE APPLICATIONS ROUTES ──
+
+app.post('/api/apply-offline', authenticateToken, upload.fields([
+    { name: 'panFile', maxCount: 1 },
+    { name: 'aadharFrontFile', maxCount: 1 },
+    { name: 'aadharBackFile', maxCount: 1 },
+    { name: 'bankStatementFile', maxCount: 1 },
+    { name: 'salarySlip1File', maxCount: 1 },
+    { name: 'salarySlip2File', maxCount: 1 },
+    { name: 'salarySlip3File', maxCount: 1 },
+    { name: 'form16File', maxCount: 1 },
+    { name: 'electricityBillFile', maxCount: 1 }
+]), async (req, res) => {
+    try {
+        const data = req.body;
+        const partner_id = req.user.id;
+
+        const pan_file_url = req.files['panFile'] ? `/uploads/${req.files['panFile'][0].filename}` : null;
+        const aadhar_front_url = req.files['aadharFrontFile'] ? `/uploads/${req.files['aadharFrontFile'][0].filename}` : null;
+        const aadhar_back_url = req.files['aadharBackFile'] ? `/uploads/${req.files['aadharBackFile'][0].filename}` : null;
+        const bank_statement_url = req.files['bankStatementFile'] ? `/uploads/${req.files['bankStatementFile'][0].filename}` : null;
+        const salary_slip_1_url = req.files['salarySlip1File'] ? `/uploads/${req.files['salarySlip1File'][0].filename}` : null;
+        const salary_slip_2_url = req.files['salarySlip2File'] ? `/uploads/${req.files['salarySlip2File'][0].filename}` : null;
+        const salary_slip_3_url = req.files['salarySlip3File'] ? `/uploads/${req.files['salarySlip3File'][0].filename}` : null;
+        const form16_url = req.files['form16File'] ? `/uploads/${req.files['form16File'][0].filename}` : null;
+        const electricity_bill_url = req.files['electricityBillFile'] ? `/uploads/${req.files['electricityBillFile'][0].filename}` : null;
+
+        await db.query(`
+            INSERT INTO offline_applications (
+                partner_id, loan_amount, loan_tenure, loan_type, current_emi,
+                full_name, dob, marital_status, phone, email, address, resident_type, same_as_aadhar, aadhar_address,
+                company_name, company_address, designation, monthly_salary, salary_mode, official_phone, official_email,
+                ref1_name, ref1_phone, ref1_address, ref2_name, ref2_phone, ref2_address,
+                pan_file_url, aadhar_front_url, aadhar_back_url, bank_statement_url, salary_slip_1_url, salary_slip_2_url, salary_slip_3_url, form16_url, electricity_bill_url
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+            partner_id, data.loanAmount, data.loanTenure, data.loanType, data.currentEmi,
+            data.fullName, data.dob, data.maritalStatus, data.phone, data.email, data.address, data.residentType, data.sameAsAadhar === 'true', data.aadharAddress,
+            data.companyName, data.companyAddress, data.designation, data.monthlySalary, data.salaryMode, data.officialPhone, data.officialEmail,
+            data.ref1Name, data.ref1Phone, data.ref1Address, data.ref2Name, data.ref2Phone, data.ref2Address,
+            pan_file_url, aadhar_front_url, aadhar_back_url, bank_statement_url, salary_slip_1_url, salary_slip_2_url, salary_slip_3_url, form16_url, electricity_bill_url
+        ]);
+
+        res.status(201).json({ message: 'Offline application submitted successfully!' });
+    } catch (error) {
+        console.error('Offline application submit error:', error);
+        res.status(500).json({ message: 'Error submitting application' });
+    }
+});
+
+app.get('/api/admin/offline-applications', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT a.*, p.name as partner_name, p.email as partner_email 
+            FROM offline_applications a
+            JOIN partners p ON a.partner_id = p.id
+            ORDER BY a.created_at DESC
+        `);
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+app.post('/api/admin/offline-applications/:id/status', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        await db.query('UPDATE offline_applications SET status = ? WHERE id = ?', [status, id]);
+        res.json({ message: 'Application status updated' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 // ── PUBLIC DYNAMIC DATA ROUTES ──
 
@@ -699,10 +863,16 @@ app.get('/api/services', async (req, res) => {
 app.get('/api/product/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [id]);
+        const [rows] = await db.query(`
+            SELECT p.*, s.route_path as service_route_path, s.name as service_name 
+            FROM products p 
+            LEFT JOIN services s ON p.service_id = s.id 
+            WHERE p.id = ?
+        `, [id]);
         if (rows.length === 0) return res.status(404).json({ message: 'Product not found' });
         res.json(rows[0]);
     } catch (error) {
+        console.error('Error fetching product:', error);
         res.status(500).json({ message: 'Error fetching product' });
     }
 });
@@ -724,19 +894,19 @@ app.get('/api/products/:serviceName', async (req, res) => {
 app.get('/api/leads', authenticateToken, async (req, res) => {
     try {
         const partner_id = req.user.id;
-        
+
         // Direct Leads
         const [myLeads] = await db.query(
             'SELECT l.*, p.bank_name as bank FROM leads l LEFT JOIN products p ON l.product_id = p.id WHERE l.partner_id = ? ORDER BY l.created_at DESC',
             [partner_id]
         );
-        
+
         // Referral Leads
         const [referralLeads] = await db.query(
             'SELECT l.*, p.bank_name as bank, agent.name as agent_name FROM leads l LEFT JOIN products p ON l.product_id = p.id JOIN partners agent ON l.partner_id = agent.id WHERE agent.referred_by = ? ORDER BY l.created_at DESC',
             [partner_id]
         );
-        
+
         res.json({ myLeads, referralLeads });
     } catch (err) {
         console.error('Error fetching leads:', err);
@@ -748,17 +918,17 @@ app.get('/api/leads', authenticateToken, async (req, res) => {
 app.get('/api/admin/partner/:id/leads', authenticateToken, isAdmin, async (req, res) => {
     try {
         const partner_id = req.params.id;
-        
+
         const [myLeads] = await db.query(
             'SELECT l.*, p.bank_name as bank FROM leads l LEFT JOIN products p ON l.product_id = p.id WHERE l.partner_id = ? ORDER BY l.created_at DESC',
             [partner_id]
         );
-        
+
         const [referralLeads] = await db.query(
             'SELECT l.*, p.bank_name as bank, agent.name as agent_name FROM leads l LEFT JOIN products p ON l.product_id = p.id JOIN partners agent ON l.partner_id = agent.id WHERE agent.referred_by = ? ORDER BY l.created_at DESC',
             [partner_id]
         );
-        
+
         res.json({ myLeads, referralLeads });
     } catch (err) {
         console.error('Error fetching admin leads:', err);
@@ -791,18 +961,52 @@ app.post('/api/admin/banners', authenticateToken, isAdmin, async (req, res) => {
 });
 
 app.post('/api/admin/products', authenticateToken, isAdmin, async (req, res) => {
-    const { id, service_id, name, bank_name, logo_url, earn_amount, features, joining_fee, renewal_fee, share_image_url, share_description, is_featured, is_active, redirect_url } = req.body;
+    const {
+        id, service_id, name, bank_name, logo_url, earn_amount, features, joining_fee, renewal_fee,
+        share_image_url, share_description, is_featured, is_active, redirect_url,
+        product_banner, stats, benefits, whom_to_refer, training_videos, how_to_perform_steps,
+        terms_conditions, faqs, marketing_materials
+    } = req.body;
+
     try {
         if (id) {
             await db.query(
-                'UPDATE products SET service_id=?, name=?, bank_name=?, logo_url=?, earn_amount=?, features=?, joining_fee=?, renewal_fee=?, share_image_url=?, share_description=?, is_featured=?, is_active=?, redirect_url=? WHERE id=?',
-                [service_id, name, bank_name, logo_url, earn_amount, JSON.stringify(features), joining_fee, renewal_fee, share_image_url, share_description, is_featured, is_active, redirect_url, id]
+                `UPDATE products SET 
+                    service_id=?, name=?, bank_name=?, logo_url=?, earn_amount=?, features=?, 
+                    joining_fee=?, renewal_fee=?, share_image_url=?, share_description=?, 
+                    is_featured=?, is_active=?, redirect_url=?, product_banner=?, stats=?, 
+                    benefits=?, whom_to_refer=?, training_videos=?, how_to_perform_steps=?, 
+                    terms_conditions=?, faqs=?, marketing_materials=? 
+                WHERE id=?`,
+                [
+                    service_id, name, bank_name, logo_url, earn_amount, JSON.stringify(features),
+                    joining_fee, renewal_fee, share_image_url, share_description,
+                    is_featured, is_active, redirect_url, product_banner,
+                    JSON.stringify(stats || {}), JSON.stringify(benefits || []),
+                    JSON.stringify(whom_to_refer || []), JSON.stringify(training_videos || []),
+                    JSON.stringify(how_to_perform_steps || []), JSON.stringify(terms_conditions || []),
+                    JSON.stringify(faqs || []), JSON.stringify(marketing_materials || []),
+                    id
+                ]
             );
             res.json({ message: 'Product updated' });
         } else {
             await db.query(
-                'INSERT INTO products (service_id, name, bank_name, logo_url, earn_amount, features, joining_fee, renewal_fee, share_image_url, share_description, is_featured, redirect_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                [service_id, name, bank_name, logo_url, earn_amount, JSON.stringify(features), joining_fee, renewal_fee, share_image_url, share_description, is_featured, redirect_url]
+                `INSERT INTO products (
+                    service_id, name, bank_name, logo_url, earn_amount, features, 
+                    joining_fee, renewal_fee, share_image_url, share_description, 
+                    is_featured, redirect_url, product_banner, stats, benefits, 
+                    whom_to_refer, training_videos, how_to_perform_steps, terms_conditions, faqs, marketing_materials
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    service_id, name, bank_name, logo_url, earn_amount, JSON.stringify(features),
+                    joining_fee, renewal_fee, share_image_url, share_description,
+                    is_featured, redirect_url, product_banner,
+                    JSON.stringify(stats || {}), JSON.stringify(benefits || []),
+                    JSON.stringify(whom_to_refer || []), JSON.stringify(training_videos || []),
+                    JSON.stringify(how_to_perform_steps || []), JSON.stringify(terms_conditions || []),
+                    JSON.stringify(faqs || []), JSON.stringify(marketing_materials || [])
+                ]
             );
             res.status(201).json({ message: 'Product created' });
         }
@@ -819,7 +1023,7 @@ app.post('/api/leads/apply', async (req, res) => {
         if (!partner_id || !product_id || !customer_name || !customer_phone) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
-        
+
         // Optionally fetch service_type from product_id
         const [products] = await db.query('SELECT service_id FROM products WHERE id = ?', [product_id]);
         let serviceType = 'product';
@@ -888,8 +1092,8 @@ app.post('/api/admin/kyc/:id/status', authenticateToken, isAdmin, async (req, re
             }
 
             const title = status === 'approved' ? 'KYC Verified Successfully' : 'KYC Verification Rejected';
-            const message = status === 'approved' 
-                ? 'Your identity verification is complete. You can now access all premium services.' 
+            const message = status === 'approved'
+                ? 'Your identity verification is complete. You can now access all premium services.'
                 : 'There was an issue with your documents. Please review and resubmit.';
             const type = status === 'approved' ? 'success' : 'error';
 
@@ -984,7 +1188,7 @@ app.get('/api/profile/rm', authenticateToken, async (req, res) => {
             JOIN relationship_managers rm ON p.rm_id = rm.id
             WHERE p.id = ?
         `, [partner_id]);
-        
+
         if (rows.length > 0) {
             res.json(rows[0]);
         } else {
@@ -992,6 +1196,62 @@ app.get('/api/profile/rm', authenticateToken, async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: 'Error fetching assigned RM' });
+    }
+});
+
+// ── OFFLINE PARTNERS ROUTES ──
+
+app.get('/api/offline-partners', async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT * FROM offline_partners WHERE status = "active" ORDER BY id ASC');
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching offline partners:', error);
+        res.status(500).json({ message: 'Error fetching offline partners' });
+    }
+});
+
+app.get('/api/admin/offline-partners', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT * FROM offline_partners ORDER BY id DESC');
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching admin offline partners:', error);
+        res.status(500).json({ message: 'Error fetching offline partners' });
+    }
+});
+
+app.post('/api/admin/offline-partners', authenticateToken, isAdmin, async (req, res) => {
+    const { id, bank_name, logo_url, features, apply_url, status } = req.body;
+    try {
+        const featuresJson = Array.isArray(features) ? JSON.stringify(features) : (typeof features === 'string' ? features : JSON.stringify([]));
+        if (id) {
+            await db.query(
+                'UPDATE offline_partners SET bank_name = ?, logo_url = ?, features = ?, apply_url = ?, status = ? WHERE id = ?',
+                [bank_name, logo_url, featuresJson, apply_url, status, id]
+            );
+            res.json({ message: 'Offline partner updated' });
+        } else {
+            await db.query(
+                'INSERT INTO offline_partners (bank_name, logo_url, features, apply_url, status) VALUES (?, ?, ?, ?, ?)',
+                [bank_name, logo_url, featuresJson, apply_url, status || 'active']
+            );
+            res.status(201).json({ message: 'Offline partner created' });
+        }
+    } catch (error) {
+        console.error('Error saving offline partner:', error);
+        res.status(500).json({ message: 'Error saving offline partner' });
+    }
+});
+
+app.delete('/api/admin/offline-partners/:id', authenticateToken, isAdmin, async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.query('DELETE FROM offline_partners WHERE id = ?', [id]);
+        res.json({ message: 'Offline partner deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting offline partner:', error);
+        res.status(500).json({ message: 'Error deleting offline partner' });
     }
 });
 

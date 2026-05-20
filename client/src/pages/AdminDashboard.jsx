@@ -23,6 +23,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import './AdminDashboard.css';
+import AdminProductModal from '../components/AdminProductModal';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -38,8 +39,10 @@ const AdminDashboard = () => {
   const [bankAccounts, setBankAccounts] = useState([]);
   const [supportTickets, setSupportTickets] = useState([]);
   const [rms, setRms] = useState([]);
+  const [offlinePartners, setOfflinePartners] = useState([]);
+  const [offlineApplications, setOfflineApplications] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(''); // 'banner', 'product', 'kyc_details'
+  const [modalType, setModalType] = useState(''); // 'banner', 'product', 'kyc_details', 'offline_app_details'
   const [formData, setFormData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
@@ -128,6 +131,16 @@ const AdminDashboard = () => {
           setRms(await rmRes.json());
         }
       }
+
+      if (activeTab === 'offline_partners') {
+        const offlineRes = await fetch('http://localhost:5000/api/admin/offline-partners', { headers });
+        setOfflinePartners(await offlineRes.json());
+      }
+
+      if (activeTab === 'offline_applications') {
+        const offAppRes = await fetch('http://localhost:5000/api/admin/offline-applications', { headers });
+        setOfflineApplications(await offAppRes.json());
+      }
     } catch (err) {
       console.error('Fetch error:', err);
     } finally {
@@ -192,6 +205,43 @@ const AdminDashboard = () => {
       }
     } catch (err) {
       console.error('Assign RM error:', err);
+    }
+  };
+
+  const handleSaveOfflinePartner = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:5000/api/admin/offline-partners', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        setShowModal(false);
+        fetchData();
+      }
+    } catch (err) {
+      console.error('Save offline partner error:', err);
+    }
+  };
+
+  const handleDeleteOfflinePartner = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this offline partner?')) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/admin/offline-partners/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (res.ok) {
+        fetchData();
+      }
+    } catch (err) {
+      console.error('Delete offline partner error:', err);
     }
   };
 
@@ -295,6 +345,87 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleUpdateOfflineAppStatus = async (id, status) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/admin/offline-applications/${id}/status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ status })
+      });
+      if (res.ok) {
+        fetchData();
+      }
+    } catch (err) {
+      console.error('Update offline application status error:', err);
+    }
+  };
+
+  const renderOfflineApplications = () => (
+    <div className="admin-content-section animate-fade-in">
+      <div className="section-header-admin">
+        <h1 className="admin-page-title">Offline Loan Applications</h1>
+      </div>
+
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Applicant Name</th>
+              <th>Loan Needed</th>
+              <th>Partner Info</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {offlineApplications.map(app => (
+              <tr key={app.id}>
+                <td>
+                  <strong>{app.full_name}</strong><br/>
+                  <span className="sub-text">{app.phone}</span>
+                </td>
+                <td>
+                  <strong>₹{app.loan_amount}</strong><br/>
+                  <span className="sub-text">{app.loan_type} - {app.loan_tenure}M</span>
+                </td>
+                <td>
+                  <div className="td-partner">
+                    <strong>{app.partner_name}</strong>
+                  </div>
+                </td>
+                <td>
+                  <select
+                    className="admin-status-select"
+                    value={app.status}
+                    onChange={(e) => handleUpdateOfflineAppStatus(app.id, e.target.value)}
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="under review">Under Review</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </td>
+                <td>
+                  <div className="action-btns">
+                    <button className="btn-icon-admin info" title="View Full Details" onClick={() => {
+                        setModalType('offline_app_details');
+                        setFormData(app);
+                        setShowModal(true);
+                    }}><Eye size={18} /></button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {offlineApplications.length === 0 && <div className="empty-state-admin">No offline applications found.</div>}
+      </div>
+    </div>
+  );
+
   const renderSidebar = () => (
     <div className="admin-sidebar">
       <div className="admin-logo">
@@ -310,6 +441,12 @@ const AdminDashboard = () => {
         </button>
         <button className={activeTab === 'products' ? 'active' : ''} onClick={() => setActiveTab('products')}>
           <ShoppingBag size={20} /> Products & Pricing
+        </button>
+        <button className={activeTab === 'offline_partners' ? 'active' : ''} onClick={() => setActiveTab('offline_partners')}>
+          <Landmark size={20} /> Offline Partners
+        </button>
+        <button className={activeTab === 'offline_applications' ? 'active' : ''} onClick={() => setActiveTab('offline_applications')}>
+          <FileCheck size={20} /> Offline Applications
         </button>
         <button className={activeTab === 'leads' ? 'active' : ''} onClick={() => setActiveTab('leads')}>
           <TrendingUp size={20} /> Manage Leads
@@ -401,7 +538,17 @@ const AdminDashboard = () => {
     <div className="admin-content-section animate-fade-in">
       <div className="section-header-admin">
         <h1 className="admin-page-title">Products & Pricing</h1>
-        <button className="btn-add-admin" onClick={() => { setModalType('product'); setFormData({ features: [] }); setShowModal(true); }}>
+        <button className="btn-add-admin" onClick={() => { setModalType('product'); setFormData({
+          features: [],
+          stats: { earnings: 0, leads: 0, sales: 0 },
+          benefits: [],
+          whom_to_refer: [],
+          training_videos: [],
+          how_to_perform_steps: [],
+          terms_conditions: [],
+          faqs: [],
+          marketing_materials: []
+        }); setShowModal(true); }}>
           <Plus size={20} /> Add New Product
         </button>
       </div>
@@ -443,7 +590,22 @@ const AdminDashboard = () => {
                 <td><span className={`status-pill ${product.is_active ? 'active' : 'inactive'}`}>{product.is_active ? 'Active' : 'Inactive'}</span></td>
                 <td>
                   <div className="action-btns">
-                    <button className="btn-icon-admin edit" onClick={() => { setModalType('product'); setFormData(product); setShowModal(true); }}><Edit3 size={18} /></button>
+                    <button className="btn-icon-admin edit" onClick={() => { 
+                      setModalType('product'); 
+                      setFormData({
+                        ...product,
+                        features: typeof product.features === 'string' ? JSON.parse(product.features) : (product.features || []),
+                        stats: typeof product.stats === 'string' ? JSON.parse(product.stats) : (product.stats || { earnings: 0, leads: 0, sales: 0 }),
+                        benefits: typeof product.benefits === 'string' ? JSON.parse(product.benefits) : (product.benefits || []),
+                        whom_to_refer: typeof product.whom_to_refer === 'string' ? JSON.parse(product.whom_to_refer) : (product.whom_to_refer || []),
+                        training_videos: typeof product.training_videos === 'string' ? JSON.parse(product.training_videos) : (product.training_videos || []),
+                        how_to_perform_steps: typeof product.how_to_perform_steps === 'string' ? JSON.parse(product.how_to_perform_steps) : (product.how_to_perform_steps || []),
+                        terms_conditions: typeof product.terms_conditions === 'string' ? JSON.parse(product.terms_conditions) : (product.terms_conditions || []),
+                        faqs: typeof product.faqs === 'string' ? JSON.parse(product.faqs) : (product.faqs || []),
+                        marketing_materials: typeof product.marketing_materials === 'string' ? JSON.parse(product.marketing_materials) : (product.marketing_materials || [])
+                      });
+                      setShowModal(true); 
+                    }}><Edit3 size={18} /></button>
                     <button className="btn-icon-admin delete"><Trash2 size={18} /></button>
                   </div>
                 </td>
@@ -452,6 +614,69 @@ const AdminDashboard = () => {
           </tbody>
         </table>
         {products.length === 0 && <div className="empty-state-admin">No products found in this category.</div>}
+      </div>
+    </div>
+  );
+
+  const renderOfflinePartners = () => (
+    <div className="admin-content-section animate-fade-in">
+      <div className="section-header-admin">
+        <h1 className="admin-page-title">Offline Banking Partners</h1>
+        <button className="btn-add-admin" onClick={() => { setModalType('offline_partner'); setFormData({ features: ['Documents Upload', 'Dedicated Support'] }); setShowModal(true); }}>
+          <Plus size={20} /> Add New Partner
+        </button>
+      </div>
+
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Bank Name</th>
+              <th>Logo</th>
+              <th>Apply URL</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {offlinePartners.map(partner => (
+              <tr key={partner.id}>
+                <td><strong>{partner.bank_name}</strong></td>
+                <td>
+                  <img src={partner.logo_url} alt="" className="mini-logo" style={{ maxHeight: '24px', objectFit: 'contain' }} />
+                </td>
+                <td>
+                  <a href={partner.apply_url} target="_blank" rel="noopener noreferrer" className="admin-link">
+                    {partner.apply_url}
+                  </a>
+                </td>
+                <td>
+                  <span className={`status-pill ${partner.status === 'active' ? 'active' : 'inactive'}`}>
+                    {partner.status}
+                  </span>
+                </td>
+                <td>
+                  <div className="action-btns">
+                    <button className="btn-icon-admin edit" onClick={() => { 
+                      setModalType('offline_partner'); 
+                      setFormData({
+                        ...partner,
+                        features: typeof partner.features === 'string' ? JSON.parse(partner.features) : (partner.features || ['Documents Upload', 'Dedicated Support'])
+                      }); 
+                      setShowModal(true); 
+                    }}>
+                      <Edit3 size={18} />
+                    </button>
+                    <button className="btn-icon-admin delete" onClick={() => handleDeleteOfflinePartner(partner.id)}>
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {offlinePartners.length === 0 && <div className="empty-state-admin">No offline partners found.</div>}
       </div>
     </div>
   );
@@ -859,6 +1084,8 @@ const AdminDashboard = () => {
         {activeTab === 'overview' && renderOverview()}
         {activeTab === 'banners' && renderBanners()}
         {activeTab === 'products' && renderProducts()}
+        {activeTab === 'offline_partners' && renderOfflinePartners()}
+        {activeTab === 'offline_applications' && renderOfflineApplications()}
         {activeTab === 'leads' && renderLeads()}
         {activeTab === 'partners' && renderPartners()}
         {activeTab === 'kyc' && renderKyc()}
@@ -876,14 +1103,16 @@ const AdminDashboard = () => {
               <h3>
                 {modalType === 'banner' ? (formData.id ? 'Edit Banner' : 'New Banner') :
                   modalType === 'kyc_details' ? 'Review KYC Details' :
+                  modalType === 'offline_app_details' ? 'Offline Application Details' :
                   modalType === 'rm' ? (formData.id ? 'Edit RM' : 'New RM') :
                   modalType === 'assign_rm' ? 'Assign RM to Partner' :
+                  modalType === 'offline_partner' ? (formData.id ? 'Edit Partner' : 'New Partner') :
                     (formData.id ? 'Edit Product' : 'New Product')}
               </h3>
               <button className="btn-close-modal" onClick={() => setShowModal(false)}><X size={24} /></button>
             </div>
 
-            <form className="admin-form" onSubmit={modalType === 'product' ? handleSaveProduct : modalType === 'banner' ? handleSaveBanner : modalType === 'rm' ? handleSaveRM : modalType === 'assign_rm' ? handleAssignRM : (e) => e.preventDefault()}>
+            <form className="admin-form" onSubmit={modalType === 'product' ? handleSaveProduct : modalType === 'banner' ? handleSaveBanner : modalType === 'rm' ? handleSaveRM : modalType === 'assign_rm' ? handleAssignRM : modalType === 'offline_partner' ? handleSaveOfflinePartner : (e) => e.preventDefault()}>
               <div className="form-scroll-area">
                 {modalType === 'kyc_details' ? (
                   <div className="kyc-review-wrap">
@@ -958,131 +1187,75 @@ const AdminDashboard = () => {
                       </div>
                     </div>
                   </div>
-                ) : modalType === 'product' ? (
+                                ) : modalType === 'product' ? (
+                  <AdminProductModal formData={formData} setFormData={setFormData} services={services} />
+                ) : modalType === 'offline_partner' ? (
                   <div className="form-grid">
                     <div className="form-group">
-                      <label>Product Name</label>
-                      <input
-                        type="text"
-                        value={formData.name || ''}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="e.g. AU Bank Altura Card"
-                      />
-                    </div>
-                    <div className="form-group">
                       <label>Bank Name</label>
-                      <input
-                        type="text"
-                        value={formData.bank_name || ''}
-                        onChange={(e) => setFormData({ ...formData, bank_name: e.target.value })}
-                        placeholder="e.g. AU Small Finance Bank"
+                      <input 
+                        type="text" 
+                        value={formData.bank_name || ''} 
+                        onChange={(e) => setFormData({ ...formData, bank_name: e.target.value })} 
+                        required 
+                        placeholder="e.g. HDFC Bank"
                       />
                     </div>
                     <div className="form-group">
                       <label>Logo URL</label>
-                      <input
-                        type="text"
-                        value={formData.logo_url || ''}
-                        onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-                        placeholder="https://logo.url/bank.svg"
+                      <input 
+                        type="text" 
+                        value={formData.logo_url || ''} 
+                        onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })} 
+                        required 
+                        placeholder="https://..."
+                      />
+                    </div>
+                    <div className="form-group full-width">
+                      <label>Apply URL</label>
+                      <input 
+                        type="text" 
+                        value={formData.apply_url || ''} 
+                        onChange={(e) => setFormData({ ...formData, apply_url: e.target.value })} 
+                        required 
+                        placeholder="https://..."
                       />
                     </div>
                     <div className="form-group">
-                      <label>Earn Amount (e.g. 2300 or 2.5%)</label>
-                      <input
-                        type="text"
-                        value={formData.earn_amount || ''}
-                        onChange={(e) => setFormData({ ...formData, earn_amount: e.target.value })}
-                        placeholder="2300"
+                      <label>Status</label>
+                      <select 
+                        value={formData.status || 'active'} 
+                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      >
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Feature 1</label>
+                      <input 
+                        type="text" 
+                        value={Array.isArray(formData.features) ? (formData.features[0] || '') : ''} 
+                        onChange={(e) => {
+                          const newFeatures = Array.isArray(formData.features) ? [...formData.features] : [];
+                          newFeatures[0] = e.target.value;
+                          setFormData({ ...formData, features: newFeatures });
+                        }} 
+                        placeholder="e.g. Documents Upload"
                       />
                     </div>
                     <div className="form-group">
-                      <label>Joining Fee</label>
-                      <input
-                        type="text"
-                        value={formData.joining_fee || ''}
-                        onChange={(e) => setFormData({ ...formData, joining_fee: e.target.value })}
-                        placeholder="499 + GST"
+                      <label>Feature 2</label>
+                      <input 
+                        type="text" 
+                        value={Array.isArray(formData.features) ? (formData.features[1] || '') : ''} 
+                        onChange={(e) => {
+                          const newFeatures = Array.isArray(formData.features) ? [...formData.features] : [];
+                          newFeatures[1] = e.target.value;
+                          setFormData({ ...formData, features: newFeatures });
+                        }} 
+                        placeholder="e.g. Dedicated Support"
                       />
-                    </div>
-                    <div className="form-group">
-                      <label>Renewal Fee</label>
-                      <input
-                        type="text"
-                        value={formData.renewal_fee || ''}
-                        onChange={(e) => setFormData({ ...formData, renewal_fee: e.target.value })}
-                        placeholder="Free"
-                      />
-                    </div>
-
-                    <div className="form-group full-width">
-                      <label>Shareable Image URL (Promo Visual)</label>
-                      <input
-                        type="text"
-                        value={formData.share_image_url || ''}
-                        onChange={(e) => setFormData({ ...formData, share_image_url: e.target.value })}
-                        placeholder="https://image.url/promo.jpg"
-                      />
-                    </div>
-
-                    <div className="form-group full-width">
-                      <label>Share Description (For Partner Social Sharing)</label>
-                      <textarea
-                        value={formData.share_description || ''}
-                        onChange={(e) => setFormData({ ...formData, share_description: e.target.value })}
-                        placeholder="Short description for sharing on WhatsApp/Social media..."
-                      ></textarea>
-                    </div>
-
-                    <div className="form-group full-width">
-                      <label>Official Bank Redirect URL</label>
-                      <input
-                        type="url"
-                        value={formData.redirect_url || ''}
-                        onChange={(e) => setFormData({ ...formData, redirect_url: e.target.value })}
-                        placeholder="https://apply.hdfcbank.com/..."
-                      />
-                    </div>
-
-                    <div className="form-group full-width">
-                      <label>Key Features</label>
-                      <div className="features-builder">
-                        {formData.features?.map((f, idx) => (
-                          <div key={idx} className="feature-input-row">
-                            <input
-                              type="text"
-                              className="feat-icon"
-                              value={f.icon}
-                              onChange={(e) => {
-                                const newFeats = [...formData.features];
-                                newFeats[idx].icon = e.target.value;
-                                setFormData({ ...formData, features: newFeats });
-                              }}
-                              placeholder="💰"
-                            />
-                            <input
-                              type="text"
-                              className="feat-text"
-                              value={f.text}
-                              onChange={(e) => {
-                                const newFeats = [...formData.features];
-                                newFeats[idx].text = e.target.value;
-                                setFormData({ ...formData, features: newFeats });
-                              }}
-                              placeholder="Feature description"
-                            />
-                            <button type="button" onClick={() => {
-                              const newFeats = formData.features.filter((_, i) => i !== idx);
-                              setFormData({ ...formData, features: newFeats });
-                            }} className="btn-remove-feat"><Trash2 size={16} /></button>
-                          </div>
-                        ))}
-                        <button type="button" className="btn-add-feat" onClick={() => {
-                          setFormData({ ...formData, features: [...(formData.features || []), { icon: '✅', text: '' }] });
-                        }}>
-                          <Plus size={14} /> Add Feature
-                        </button>
-                      </div>
                     </div>
                   </div>
                 ) : modalType === 'rm' ? (
@@ -1114,6 +1287,46 @@ const AdminDashboard = () => {
                           <option key={rm.id} value={rm.id}>{rm.name} ({rm.phone})</option>
                         ))}
                       </select>
+                    </div>
+                  </div>
+                ) : modalType === 'offline_app_details' ? (
+                  <div className="modal-body kyc-details-body">
+                    <h3 className="kyc-section-title">Loan Details</h3>
+                    <div className="kyc-info-grid">
+                      <div className="kyc-info-item">
+                        <span className="kyc-info-label">Loan Amount</span>
+                        <span className="kyc-info-value">₹{formData.loan_amount}</span>
+                      </div>
+                      <div className="kyc-info-item">
+                        <span className="kyc-info-label">Loan Type</span>
+                        <span className="kyc-info-value">{formData.loan_type}</span>
+                      </div>
+                      <div className="kyc-info-item">
+                        <span className="kyc-info-label">Tenure</span>
+                        <span className="kyc-info-value">{formData.loan_tenure} Months</span>
+                      </div>
+                    </div>
+      
+                    <h3 className="kyc-section-title">Personal Info</h3>
+                    <div className="kyc-info-grid">
+                      <div className="kyc-info-item">
+                        <span className="kyc-info-label">Name</span>
+                        <span className="kyc-info-value">{formData.full_name}</span>
+                      </div>
+                      <div className="kyc-info-item">
+                        <span className="kyc-info-label">Phone</span>
+                        <span className="kyc-info-value">{formData.phone}</span>
+                      </div>
+                    </div>
+      
+                    <h3 className="kyc-section-title">Uploaded Documents</h3>
+                    <div className="kyc-docs-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))' }}>
+                      {['pan_file_url', 'aadhar_front_url', 'aadhar_back_url', 'bank_statement_url', 'salary_slip_1_url', 'salary_slip_2_url', 'salary_slip_3_url', 'form16_url', 'electricity_bill_url'].map(key => formData[key] ? (
+                        <div key={key} className="kyc-doc-card">
+                          <p className="kyc-doc-title">{key.replace(/_url/g, '').replace(/_/g, ' ').toUpperCase()}</p>
+                          <a href={`http://localhost:5000${formData[key]}`} target="_blank" rel="noopener noreferrer" className="btn-view-doc">View Document</a>
+                        </div>
+                      ) : null)}
                     </div>
                   </div>
                 ) : (
@@ -1177,7 +1390,7 @@ const AdminDashboard = () => {
                   <>
                     <button type="button" className="btn-secondary-admin" onClick={() => setShowModal(false)}>Cancel</button>
                     <button type="submit" className="btn-primary-admin">
-                      <Save size={18} /> {formData.id ? 'Update' : 'Save'} {modalType === 'banner' ? 'Banner' : modalType === 'product' ? 'Product' : modalType === 'rm' ? 'RM' : 'Assignment'}
+                      <Save size={18} /> {formData.id ? 'Update' : 'Save'} {modalType === 'banner' ? 'Banner' : modalType === 'product' ? 'Product' : modalType === 'rm' ? 'RM' : modalType === 'offline_partner' ? 'Partner' : 'Assignment'}
                     </button>
                   </>
                 )}

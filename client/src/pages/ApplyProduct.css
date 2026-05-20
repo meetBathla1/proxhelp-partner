@@ -283,3 +283,30 @@
   font-size: 16px;
   color: #64748b;
 }
+
+/* ── Inline Field Errors & Toast Notifications ── */
+.input-error {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2;
+}
+
+.field-error-text {
+  color: #ef4444;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 4px;
+  display: block;
+}
+
+.otp-success-toast {
+  color: #10b981 !important;
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px !important;
+  font-weight: 600;
+  margin-top: 10px;
+  display: inline-block;
+}
+

@@ -140,7 +140,7 @@ const Signup = () => {
         </button>
         <div className="header-text">
           <h1>Create Account</h1>
-          <p>Join FinXpert Partner and start earning</p>
+          <p>Join Finexprt Partner and start earning</p>
         </div>
       </header>
 

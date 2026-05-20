@@ -191,6 +191,10 @@
   background: var(--secondary);
 }
 
+.title-accent-bar.purple {
+  background: #7c3aed;
+}
+
 .section-title {
   font-size: 20px;
   font-weight: 800;
