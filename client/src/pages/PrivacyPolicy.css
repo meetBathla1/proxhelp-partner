@@ -266,3 +266,12 @@
 .policy-section:nth-child(3) { animation-delay: 0.3s; }
 .policy-section:nth-child(4) { animation-delay: 0.4s; }
 .policy-section:nth-child(5) { animation-delay: 0.5s; }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .privacy-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+

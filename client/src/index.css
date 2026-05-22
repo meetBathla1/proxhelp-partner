@@ -27,6 +27,10 @@
   --glass-bg: rgba(255, 255, 255, 0.9);
   --glass-border: #e2e8f0;
   --accent: #ff8c00;
+
+  /* Desktop responsive */
+  --content-max-width: 600px;
+  --sidebar-width: 80px;
 }
 
 * {

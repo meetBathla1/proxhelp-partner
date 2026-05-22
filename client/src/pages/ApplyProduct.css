@@ -310,3 +310,12 @@
   display: inline-block;
 }
 
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .apply-container {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+
+

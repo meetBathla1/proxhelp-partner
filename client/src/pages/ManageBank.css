@@ -267,3 +267,12 @@
 .btn-edit-bank:hover {
     background: #f1f5f9;
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .manage-bank-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+

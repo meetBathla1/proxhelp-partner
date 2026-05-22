@@ -238,3 +238,12 @@
     font-size: 12px;
     color: var(--text-muted);
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .help-support-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+

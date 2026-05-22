@@ -457,3 +457,23 @@
   font-style: italic;
   margin: 0;
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .home-content-wrapper {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding-top: 68px;
+  }
+
+  .promo-banner {
+    min-height: 140px;
+    max-height: 150px;
+  }
+
+  .promo-cards-img {
+    max-width: 130px;
+    max-height: 130px;
+  }
+}
+

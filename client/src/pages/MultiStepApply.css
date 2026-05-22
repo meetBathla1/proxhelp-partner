@@ -411,3 +411,12 @@
   margin-top: 8px;
   margin-bottom: 8px;
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .multistep-apply-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+

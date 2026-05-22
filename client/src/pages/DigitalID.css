@@ -216,3 +216,12 @@
   font-weight: 700;
   color: var(--navy);
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .digital-id-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+

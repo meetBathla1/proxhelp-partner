@@ -426,3 +426,27 @@
   color: var(--secondary);
   box-shadow: 0 2px 8px rgba(0,45,98,0.05);
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .leads-hero {
+    padding: 28px calc((100% - var(--content-max-width) + 48px) / 2) 36px;
+  }
+
+  .leads-stats-grid {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+
+  .leads-type-toggle-container {
+    max-width: var(--content-max-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .leads-body {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+

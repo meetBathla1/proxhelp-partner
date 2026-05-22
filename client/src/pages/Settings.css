@@ -272,3 +272,12 @@
 .settings-disabled-wrapper {
   opacity: 0.85;
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .settings-container {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+

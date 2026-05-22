@@ -277,3 +277,11 @@
     margin-top: 0.15rem;
   }
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .offline-partners-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}

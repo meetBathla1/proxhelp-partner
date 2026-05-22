@@ -653,3 +653,12 @@
   letter-spacing: 0.05em;
   margin-top: 1px;
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .calculator-container {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+

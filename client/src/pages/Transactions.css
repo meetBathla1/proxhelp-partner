@@ -252,3 +252,12 @@
   box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
 }
 
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .transactions-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+
+

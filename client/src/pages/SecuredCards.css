@@ -230,3 +230,12 @@
 .animate-fade-in {
   animation: fadeIn 0.4s ease-out;
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .secured-cards-page {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+}
+

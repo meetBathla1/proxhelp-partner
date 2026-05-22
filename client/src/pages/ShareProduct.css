@@ -645,3 +645,18 @@
 .btn-main-share-cta:active {
   transform: scale(0.98);
 }
+
+/* ── Desktop Responsive ── */
+@media (min-width: 769px) {
+  .pdp-page-container {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+
+  .pdp-sticky-bottom-cta {
+    left: var(--sidebar-width);
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    right: 0;
+  }
+}
